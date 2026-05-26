@@ -1,0 +1,1460 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pictet · Claude Skills Catalogue</title>
+  <meta name="description" content="A governed library of Claude skills for Pictet — universal capabilities and domain-specific tools, with named owners and a lifecycle for safe scale." />
+  <style>
+    :root {
+      --bg:            #FAFAF6;
+      --surface:       #FFFFFF;
+      --surface-alt:   #F5F2EC;
+      --border:        #E5E1D8;
+      --border-strong: #C9C0B0;
+      --text:          #1A2332;
+      --text-muted:    #5A6373;
+      --text-faint:    #8A8F9A;
+
+      --accent:        #1B365D;
+      --accent-soft:   #E8EEF5;
+      --accent-line:   #B7C5DA;
+
+      --built:         #2D7D5F;
+      --built-bg:      #E6F1EC;
+      --roadmap:       #8B7D6B;
+      --roadmap-bg:    #F0EBE0;
+
+      --prio-high:     #8B2D2D;
+      --prio-medium:   #B86B1E;
+      --prio-low:      #5A7A8B;
+
+      --dom-universal: #5A4D7A;
+      --dom-regulatory:#1B365D;
+      --dom-aml:       #6B2D3F;
+      --dom-wealth:    #2D5A3F;
+      --dom-legal:     #6B4D2D;
+      --dom-ops:       #4A5568;
+      --dom-hr:        #2D5F6B;
+
+      --shadow-card:   0 1px 0 rgba(26,35,50,.04), 0 1px 2px rgba(26,35,50,.03);
+      --shadow-card-hover: 0 2px 4px rgba(26,35,50,.06), 0 1px 2px rgba(26,35,50,.04);
+
+      --font-serif: Georgia, "Times New Roman", Times, serif;
+      --font-sans:  -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", system-ui, sans-serif;
+      --font-mono:  "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+
+      --r-sm: 4px;
+      --r-md: 6px;
+      --r-lg: 10px;
+
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 24px;
+      --space-6: 32px;
+      --space-7: 48px;
+      --space-8: 64px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { background: var(--bg); color: var(--text); }
+    body {
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.55;
+      margin: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 var(--space-6);
+    }
+
+    h1, h2, h3 {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    h1 {
+      font-size: 44px;
+      line-height: 1.1;
+      margin: 0 0 var(--space-3);
+    }
+
+    h2 {
+      font-size: 26px;
+      line-height: 1.2;
+      margin: 0 0 var(--space-4);
+      letter-spacing: -0.005em;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin: 0 0 var(--space-4);
+    }
+
+    p { margin: 0 0 var(--space-3); }
+
+    a { color: var(--accent); }
+
+    .mono { font-family: var(--font-mono); font-size: 0.92em; }
+
+    /* ─── Top bar ─────────────────────────────────────── */
+
+    .topbar {
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-4) 0;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      color: var(--text);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+
+    .brand .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent);
+      display: inline-block;
+    }
+
+    .topbar-meta {
+      display: flex; gap: var(--space-5);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .topbar-meta span strong {
+      color: var(--text); font-weight: 600;
+    }
+
+    /* ─── Hero ─────────────────────────────────────── */
+
+    .hero {
+      padding: var(--space-8) 0 var(--space-7);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-eyebrow {
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: var(--space-4);
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      line-height: 1.55;
+      color: var(--text-muted);
+      max-width: 720px;
+      margin-bottom: var(--space-6);
+    }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+      margin-top: var(--space-6);
+    }
+
+    .kpi {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: var(--space-5);
+    }
+
+    .kpi-num {
+      font-family: var(--font-serif);
+      font-size: 36px;
+      line-height: 1;
+      color: var(--text);
+      margin-bottom: var(--space-2);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .kpi-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    /* ─── Sections ─────────────────────────────────────── */
+
+    section.block {
+      padding: var(--space-8) 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    section.block:last-of-type { border-bottom: none; }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: var(--space-6);
+      gap: var(--space-5);
+      flex-wrap: wrap;
+    }
+
+    .section-head h2 { margin: 0; }
+
+    .section-head .lede {
+      color: var(--text-muted);
+      max-width: 540px;
+      font-size: 15px;
+      margin: 0;
+    }
+
+    /* ─── Governance ─────────────────────────────────────── */
+
+    .principles {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-4);
+    }
+
+    .principle {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: var(--space-5);
+      display: flex;
+      gap: var(--space-4);
+    }
+
+    .principle-num {
+      font-family: var(--font-serif);
+      font-size: 28px;
+      color: var(--accent);
+      line-height: 1;
+      min-width: 36px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .principle-body strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: var(--space-2);
+      color: var(--text);
+    }
+
+    .principle-body p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    /* ─── Filter bar ─────────────────────────────────────── */
+
+    .filter-bar {
+      display: flex;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-6);
+      align-items: center;
+    }
+
+    .filter-bar .filter-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-right: var(--space-3);
+    }
+
+    .pill {
+      font: inherit;
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      transition: all .15s ease;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .pill:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .pill.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .pill .count {
+      opacity: 0.55;
+      margin-left: 4px;
+    }
+
+    .pill.active .count {
+      opacity: 0.75;
+    }
+
+    .search-input {
+      font: inherit;
+      font-size: 13px;
+      padding: 7px 12px;
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--text);
+      width: 220px;
+      margin-left: auto;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    /* ─── Skill grid ─────────────────────────────────────── */
+
+    .domain-group {
+      margin-bottom: var(--space-7);
+    }
+
+    .domain-group:last-child { margin-bottom: 0; }
+
+    .domain-head {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-4);
+      margin-bottom: var(--space-4);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .domain-head h3 {
+      margin: 0;
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 400;
+      letter-spacing: -0.005em;
+      color: var(--text);
+      text-transform: none;
+    }
+
+    .domain-owner {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .domain-owner strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .domain-count {
+      margin-left: auto;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-faint);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .skill-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: var(--space-4);
+    }
+
+    .skill-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: var(--space-5);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      transition: box-shadow .15s ease, border-color .15s ease, transform .15s ease;
+    }
+
+    .skill-card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-card-hover);
+    }
+
+    .skill-card.hidden { display: none; }
+
+    .skill-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-3);
+    }
+
+    .skill-name {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .status {
+      font-size: 10.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 3px 8px;
+      border-radius: var(--r-sm);
+      white-space: nowrap;
+    }
+
+    .status.built  { color: var(--built);   background: var(--built-bg); }
+    .status.roadmap{ color: var(--roadmap); background: var(--roadmap-bg); }
+
+    .skill-desc {
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .skill-when {
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 0;
+      font-style: italic;
+    }
+
+    .skill-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      align-items: center;
+      margin-top: auto;
+      padding-top: var(--space-3);
+      border-top: 1px dashed var(--border);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11.5px;
+      padding: 2px 8px;
+      border-radius: var(--r-sm);
+      letter-spacing: 0.02em;
+      background: var(--surface-alt);
+      color: var(--text-muted);
+    }
+
+    .tag.layer.universal { color: var(--dom-universal); background: rgba(90, 77, 122, 0.08); }
+    .tag.layer.domain    { color: var(--accent);        background: var(--accent-soft); }
+
+    .tag.priority.high   { color: var(--prio-high);   background: rgba(139,45,45,0.08); }
+    .tag.priority.medium { color: var(--prio-medium); background: rgba(184,107,30,0.08); }
+    .tag.priority.low    { color: var(--prio-low);    background: rgba(90,122,139,0.08); }
+
+    .owner {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text);
+      padding: 3px 9px;
+      border-radius: var(--r-sm);
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-line);
+    }
+
+    .owner::before {
+      content: "";
+      display: inline-block;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* ─── Lifecycle ─────────────────────────────────────── */
+
+    .lifecycle {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--space-3);
+      position: relative;
+    }
+
+    .lifecycle-step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: var(--space-4);
+      position: relative;
+      text-align: left;
+    }
+
+    .lifecycle-step .step-num {
+      font-family: var(--font-serif);
+      font-size: 13px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      margin-bottom: var(--space-2);
+    }
+
+    .lifecycle-step h4 {
+      margin: 0 0 var(--space-2);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .lifecycle-step p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ─── Phasing ─────────────────────────────────────── */
+
+    .phases {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+    }
+
+    .phase {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: var(--space-5);
+      border-top: 3px solid var(--accent);
+    }
+
+    .phase.phase-0 { border-top-color: var(--built); }
+    .phase.phase-1 { border-top-color: var(--accent); }
+    .phase.phase-2 { border-top-color: var(--dom-aml); }
+    .phase.phase-3 { border-top-color: var(--dom-wealth); }
+
+    .phase-label {
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: var(--space-2);
+    }
+
+    .phase h4 {
+      margin: 0 0 var(--space-2);
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: 18px;
+    }
+
+    .phase .phase-when {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: var(--space-3);
+    }
+
+    .phase ul {
+      margin: 0;
+      padding-left: 18px;
+      font-size: 13.5px;
+      color: var(--text);
+    }
+
+    .phase li { margin-bottom: 4px; }
+
+    /* ─── Footer ─────────────────────────────────────── */
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: var(--space-6) 0 var(--space-7);
+      color: var(--text-muted);
+      font-size: 12.5px;
+    }
+
+    footer .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--space-5);
+      flex-wrap: wrap;
+    }
+
+    footer strong { color: var(--text); }
+
+    .legend {
+      display: flex;
+      gap: var(--space-4);
+      align-items: center;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .legend-dot {
+      width: 8px; height: 8px;
+      display: inline-block;
+      margin-right: 6px;
+      border-radius: 2px;
+      vertical-align: middle;
+    }
+
+    /* ─── Responsive ─────────────────────────────────────── */
+
+    @media (max-width: 920px) {
+      h1 { font-size: 34px; }
+      h2 { font-size: 22px; }
+      .container { padding: 0 var(--space-4); }
+      .kpis      { grid-template-columns: repeat(2, 1fr); }
+      .principles{ grid-template-columns: 1fr; }
+      .lifecycle { grid-template-columns: repeat(2, 1fr); }
+      .phases    { grid-template-columns: 1fr 1fr; }
+      .topbar-meta { display: none; }
+      .search-input { width: 100%; margin-left: 0; margin-top: var(--space-2); }
+    }
+
+    @media (max-width: 540px) {
+      .skill-grid { grid-template-columns: 1fr; }
+      .phases     { grid-template-columns: 1fr; }
+      .lifecycle  { grid-template-columns: 1fr; }
+    }
+
+    /* ─── Print ─────────────────────────────────────── */
+
+    @media print {
+      .filter-bar, .topbar-meta, .search-input { display: none; }
+      .skill-card { break-inside: avoid; box-shadow: none; }
+      section.block { padding: var(--space-5) 0; border-bottom: 1px solid var(--border); }
+      a { color: var(--text); text-decoration: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ─── Top bar ────────────────────────────────────────────── -->
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <span class="dot"></span>
+        <span>Pictet · Innovation Competition</span>
+      </div>
+      <div class="topbar-meta">
+        <span><strong>v0.1</strong> · Phase 0 demonstrator</span>
+        <span>Last updated <strong>2026‑05‑26</strong></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── Hero ────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-eyebrow">Claude Skills Catalogue</div>
+      <h1>A governed skills library<br/>for a regulated bank.</h1>
+      <p class="hero-sub">
+        A curated set of Claude skills, organised into universal capabilities used across the bank
+        and domain‑specific tools owned by the functions that know the subject matter.
+        Every skill has a named owner, a clear scope, and is reviewed quarterly.
+      </p>
+
+      <div class="kpis">
+        <div class="kpi">
+          <div class="kpi-num">4</div>
+          <div class="kpi-label">Built for the demo</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-num">23</div>
+          <div class="kpi-label">On the roadmap</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-num">7</div>
+          <div class="kpi-label">Owning functions</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-num">6</div>
+          <div class="kpi-label">Domains covered</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Governance ────────────────────────────────────────────── -->
+  <section class="block">
+    <div class="container">
+      <div class="section-head">
+        <h2>Governance principles</h2>
+        <p class="lede">
+          These seven rules make the library safe to scale across a regulated bank.
+          Every skill in the catalogue is built and reviewed against them.
+        </p>
+      </div>
+
+      <div class="principles">
+        <div class="principle">
+          <div class="principle-num">01</div>
+          <div class="principle-body">
+            <strong>One skill, one capability</strong>
+            <p>A skill that does five things is a bad skill. Decompose. Narrow scopes are easier to test, easier to govern, and easier to retire.</p>
+          </div>
+        </div>
+
+        <div class="principle">
+          <div class="principle-num">02</div>
+          <div class="principle-body">
+            <strong>Cite or refuse</strong>
+            <p>Any skill producing factual claims cites the source or says “I don't know”. No invented citations, no confident paraphrase without a referent.</p>
+          </div>
+        </div>
+
+        <div class="principle">
+          <div class="principle-num">03</div>
+          <div class="principle-body">
+            <strong>Functions own their skills</strong>
+            <p>Compliance owns the regulatory skills. AML owns KYC. Legal owns contracts. Sign‑off is a hard gate before a skill goes live.</p>
+          </div>
+        </div>
+
+        <div class="principle">
+          <div class="principle-num">04</div>
+          <div class="principle-body">
+            <strong>Drafts, not decisions</strong>
+            <p>Skills draft. Humans decide. Outputs lead with a DRAFT banner and surface uncertainty rather than papering over it.</p>
+          </div>
+        </div>
+
+        <div class="principle">
+          <div class="principle-num">05</div>
+          <div class="principle-body">
+            <strong>No client data in unapproved tools</strong>
+            <p>The catalogue runs in Pictet‑approved AI environments only. Skills enforce this in their own instructions and refuse to operate on raw confidential data.</p>
+          </div>
+        </div>
+
+        <div class="principle">
+          <div class="principle-num">06</div>
+          <div class="principle-body">
+            <strong>Quarterly review</strong>
+            <p>Every skill's owner reviews it quarterly. References (regulator URLs, policy indexes) decay fast — verification is part of the lifecycle, not optional.</p>
+          </div>
+        </div>
+
+        <div class="principle">
+          <div class="principle-num">07</div>
+          <div class="principle-body">
+            <strong>One contribution path</strong>
+            <p>A single markdown template, a function sign‑off, a central review, a published skill. No shadow library, no rogue forks.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Catalogue ────────────────────────────────────────────── -->
+  <section class="block" id="catalogue">
+    <div class="container">
+
+      <div class="section-head">
+        <h2>The catalogue</h2>
+        <p class="lede">
+          Four skills are built and ready to demonstrate today. Twenty‑three more are on the
+          near‑term roadmap, organised by domain and with named owners.
+        </p>
+      </div>
+
+      <!-- Filter bar -->
+      <div class="filter-bar" role="toolbar" aria-label="Filter skills">
+        <span class="filter-label">Filter</span>
+        <button class="pill active" data-filter="all">All <span class="count" id="count-all">27</span></button>
+        <button class="pill" data-filter="built">Built <span class="count">4</span></button>
+        <button class="pill" data-filter="roadmap">Roadmap <span class="count">23</span></button>
+        <button class="pill" data-filter="universal">Universal <span class="count">8</span></button>
+        <button class="pill" data-filter="regulatory">Regulatory <span class="count">6</span></button>
+        <button class="pill" data-filter="aml">AML <span class="count">3</span></button>
+        <button class="pill" data-filter="wealth">Wealth <span class="count">3</span></button>
+        <button class="pill" data-filter="legal">Legal <span class="count">3</span></button>
+        <button class="pill" data-filter="ops">Ops &amp; Tech <span class="count">2</span></button>
+        <button class="pill" data-filter="hr">HR <span class="count">2</span></button>
+        <input type="search" class="search-input" placeholder="Search by name…" id="search" aria-label="Search by skill name" />
+      </div>
+
+      <!-- ─ Universal ─ -->
+      <div class="domain-group" data-domain="universal">
+        <div class="domain-head">
+          <h3>Universal · Cross‑team</h3>
+          <span class="domain-owner">Maintained by <strong>AI Centre of Excellence</strong> · content curated by each calling function</span>
+          <span class="domain-count">8 skills · 1 built</span>
+        </div>
+
+        <div class="skill-grid">
+
+          <!-- policy-lookup -->
+          <article class="skill-card" data-status="built" data-domain="universal">
+            <div class="skill-card-top">
+              <div class="skill-name">policy-lookup</div>
+              <span class="status built">Built</span>
+            </div>
+            <p class="skill-desc">Cited answers from any internal‑policy corpus. Tells you exactly which section applies, quotes the wording, and refuses to guess if it can't find a match.</p>
+            <p class="skill-when">“Does our policy cover X?” · Compliance, HR, IT, Legal — anywhere there's a policy library.</p>
+            <div class="skill-meta">
+              <span class="tag layer universal">Universal</span>
+              <span class="owner">AI CoE + corpus owner</span>
+            </div>
+          </article>
+
+          <article class="skill-card" data-status="roadmap" data-domain="universal" data-priority="high">
+            <div class="skill-card-top">
+              <div class="skill-name">document-summariser</div>
+              <span class="status roadmap">Roadmap</span>
+            </div>
+            <p class="skill-desc">Structured summary of a long PDF or report: TL;DR, section bullets, key figures, named entities.</p>
+            <p class="skill-when">Replaces the “can you give me the gist?” email loop.</p>
+            <div class="skill-meta">
+              <span class="tag layer universal">Universal</span>
+              <span class="tag priority high">High priority</span>
+              <span class="owner">AI Centre of Excellence</span>
+            </div>
+          </article>
+
+          <article class="skill-card" data-status="roadmap" data-domain="universal" data-priority="high">
+            <div class="skill-card-top">
+              <div class="skill-name">meeting-notes-extractor</div>
+              <span class="status roadmap">Roadmap</span>
+            </div>
+            <p class="skill-desc">From notes or a transcript: decisions, action items with owners, deadlines, follow‑ups.</p>
+            <p class="skill-when">After every committee, board, or town‑hall.</p>
+            <div class="skill-meta">
+              <span class="tag layer universal">Universal</span>
+              <span class="tag priority high">High priority</span>
+              <span class="owner">AI Centre of Excellence</span>
+            </div>
+          </article>
+
+          <article class="skill-card" data-status="roadmap" data-domain="universal" data-priority="high">
+            <div class="skill-card-top">
+              <div class="skill-name">client-comms-drafter</div>
+              <span class="status roadmap">Roadmap</span>
+            </div>
+            <p class="skill-desc">Drafts client communications in Pictet's voice — EN, FR, DE, IT — with tone, jargon, and disclaimer rules enforced.</p>
+            <p class="skill-when">RM letters, regulatory client notices, event invitations.</p>
+            <div class="skill-meta">
+              <span class="tag layer universal">Universal</span>
+              <span class="tag priority high">High priority</span>
+              <span class="owner">Corporate Communications</span>
+            </div>
+          </article>
+
+          <article class="skill-card" data-status="roadmap" data-domain="universal" data-priority="medium">
+            <div class="skill-card-top">
+              <div class="skill-name">multilingual-translator</div>
+              <span class="status roadmap">Roadmap</span>
+            </div>
+            <p class="skill-desc">EN / FR / DE / IT translation tuned for banking, legal, and regulatory text. Preserves terms of art.</p>
+            <p class="skill-when">Translating a FINMA circular for a London team, or a HK guidance for Geneva.</p>
+            <div class="skill-meta">
+              <span class="tag layer universal">Universal</span>
+              <span class="tag priority medium">Medium priority</span>
+              <span class="owner">AI Centre of Excellence</span>
+            </div>
+          </article>
+
+          <article class="skill-card" data-status="roadmap" data-domain="universal" data-priority="medium">
+            <div class="skill-card-top">
+              <div class="skill-name">pictet-tone-checker</div>
+              <span class="status roadmap">Roadmap</span>
+            </div>
+            <p class="skill-desc">Reviews a draft for tone, jargon, prohibited claims, missing disclaimers and house‑style violations.</p>
+            <p class="skill-when">Before any external communication leaves the building.</p>
+            <div class="skill-meta">
+              <span class="tag layer universal">Universal</span>
+              <span class="tag priority medium">Medium priority</span>
+              <span class="owner">Corporate Communications</span>
+            </div>
+          </article>
+
+          <article class="skill-card" data-status="roadmap" data-domain="universal" data-priority="medium">
+            <div class="skill-card-top">
+              <div class="skill-name">data-tidy</div>
+              <span class="status roadmap">Roadmap</span>
+            </div>
+            <p class="skill-desc">Cleans and normalises a pasted table — column types, missing values, duplicates — without leaving the chat.</p>
+            <p class="skill-when">When a colleague sends a CSV that the dashboard refuses to ingest.</p>
+            <div class="skill-meta">
+              <span class="tag layer universal">Universal</span>
+              <span class="tag priority medium">Medium priority</span>
+              <span class="owner">AI Centre of Excellence</span>
+            </div>
+          </article>
+
+          <article class="skill-card" data-status="roadmap" data-domain="universal" data-priority="low">
+            <div class="skill-card-top">
+              <div class="skill-name">slide-skeleton</div>
+              <span class="status roadmap">Roadmap</span>
+            </div>
+            <p class="skill-desc">Turns a one‑pager into a five‑slide outline plus speaker notes.</p>
+            <p class="skill-when">Twenty minutes before the meeting nobody prepared for.</p>
+            <div class="skill-meta">
+              <span class="tag layer universal">Universal</span>
+              <span class="tag priority low">Low priority</span>
+              <span class="owner">AI Centre of Excellence</span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- ─ Regulatory ─ -->
+      <div class="domain-group" data-domain="regulatory">
+        <div class="domain-head">
+          <h3>Domain · Regulatory</h3>
+          <span class="domain-owner">Owned by <strong>Group Compliance</strong></span>
+          <span class="domain-count">6 skills · 3 built</span>
+        </div>
+
+        <div class="skill-grid">
+
+          <article class="skill-card" data-status="built" data-domain="regulatory">
+            <div class="skill-card-top">
+              <div class="skill-name">regulator-watch</div>
+              <span class="status built">Built</span>
+            </div>
+            <p class="skill-desc">Monitors FINMA, HKMA and SFC publication pages. Produces a digest filtered for private‑banking relevance, with source URLs, dates, and a Pictet‑impact note.</p>
+            <p class="skill-when">“What's new from FINMA this week?” — Monday‑morning routine.</p>
+            <div class="skill-meta">
+              <span class="tag layer domain">Regulatory</span>
+              <span class="owner">Group Compliance</span>
+            </div>
+          </article>
+
+          <article class="skill-card" data-status="built" data-domain="regulatory">
+            <div class="skill-card-top">
+              <div class="skill-name">reg-impact-assessor</div>
+              <span class="status built">Built</span>
+            </div>
+            <p class="skill-desc">Decomposes a new regulation into numbered requirements, runs gap analysis vs current policy, drafts an action plan and an ExCo summary.</p>
+            <p class="skill-when">Forward‑looking — new regulation arrives, what do we change?</p>
+            <div class="skill-meta">
+              <span class="tag layer domain">Regulatory</span>
+              <span class="owner">Group Compliance</span>
+            </div>
+          </article>
+
+          <article class="skill-card" data-status="built" data-domain="regulatory">
+            <div class="skill-card-top">
+              <div class="skill-name">policy-compliance-checker</div>
+              <span class="status built">Built</span>
+            </div>
+            <p class="skill-desc">Audits an internal policy against a named regulator source. Per‑requirement coverage map, severity‑ranked gap list, compliance scorecard.</p>
+            <p class="skill-when">Backward‑looking — does our existing policy meet today's expectations?</p>
+            <div class="skill-meta">
+              <span class="tag layer domain">Regulatory</span>
+              <span class="owner">Group Compliance + Op Risk</span>
+            </div>
+          </article>
+
+          <article class="skill-card" data-status="roadmap" data-domain="regulatory" data-priority="high">
+            <div class="skill-card-top">
+              <div class="skill-name">return-filer-helper</div>
+              <span class="status roadmap">Roadmap</span>
+            </div>
+            <p class="skill-desc">Walkthroughs for periodic supervisory returns (HKMA MA(BS), FINMA self‑assessments) — fields, common errors, deadlines.</p>
+            <p class="skill-when">Filing season; new joiners in the regulatory reporting team.</p>
+            <div class="skill-meta">
+              <span class="tag layer domain">Regulatory</span>
+              <span class="tag priority high">High priority</span>
+              <span class="owner">Regulatory Reporting</span>
+            </div>
+          </article>
+
+          <article class="skill-card" data-status="roadmap" data-domain="regulatory" data-priority="medium">
+            <div class="skill-card-top">
+              <div class="skill-name">consultation-responder</div>
+              <span class="status roadmap">Roadmap</span>
+            </div>
+            <p class="skill-desc">Drafts a Pictet response to a regulator consultation: structured by question, balanced, with our position cross‑checked against prior submissions.</p>
+            <p class="skill-when">When an open FINMA, HKMA or SFC consultation lands.</p>
+            <div class="skill-meta">
+              <span class="tag layer domain">Regulatory</span>
+              <span class="tag priority medium">Medium priority</span>
+              <span class="owner">Group Compliance</span>
+            </div>
+          </article>
+
+          <article class="skill-card" data-status="roadmap" data-domain="regulatory" data-priority="medium">
+            <div class="skill-card-top">
+              <div class="skill-name">circular-translator</div>
+              <span class="status roadmap">Roadmap</span>
+            </div>
+            <p class="skill-desc">Plain‑English / plain‑French rewrite of a regulator circular for a business audience, without losing the binding obligations.</p>
+            <p class="skill-when">Briefing a Business Line Head on what a circular actually means for them.</p>
+            <div class="skill-meta">
+              <span class="tag layer domain">Regulatory</span>
+              <span class="tag priority medium">Medium priority</span>
+              <span class="owner">Group Compliance</span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- ─ AML ─ -->
+      <div class="domain-group" data-domain="aml">
+        <div class="domain-head">
+          <h3>Domain · AML &amp; Financial Crime</h3>
+          <span class="domain-owner">Owned by <strong>AML Unit</strong></span>
+          <span class="domain-count">3 skills · 0 built</span>
+        </div>
+
+        <div class="skill-grid">
+
+          <article class="skill-card" data-status="roadmap" data-domain="aml" data-priority="high">
+            <div class="skill-card-top">
+              <div class="skill-name">kyc-file-summariser</div>
+              <span class="status roadmap">Roadmap</span>
+            </div>
+            <p class="skill-desc">Structured summary of a KYC file: red flags, missing fields, source‑of‑wealth gaps, escalation triggers.</p>
+            <p class="skill-when">Periodic KYC review; new‑client onboarding sign‑off.</p>
+            <div class="skill-meta">
+              <span class="tag layer domain">AML</span>
+              <span class="tag priority high">High priority</span>
+              <span class="owner">AML Unit</span>
+            </div>
+          </article>
+
+          <article class="skill-card" data-status="roadmap" data-domain="aml" data-priority="high">
+            <div class="skill-card-top">
+              <div class="skill-name">pep-screening-explainer</div>
+              <span class="status roadmap">Roadmap</span>
+            </div>
+            <p class="skill-desc">Explains why a name surfaced in screening: which database, which match logic, what risk indicators apply, what next step is appropriate.</p>
+            <p class="skill-when">When a screening alert lands on the L1 reviewer's desk.</p>
+            <div class="skill-meta">
+              <span class="tag layer domain">AML</span>
+              <span class="tag priority high">High priority</span>
+              <span class="owner">AML Unit</span>
+            </div>
+          </article>
+
+          <article class="skill-card" data-status="roadmap" data-domain="aml" data-priority="medium">
+            <div class="skill-card-top">
+              <div class="skill-name">transaction-narrative</div>
+              <span class="status roadmap">Roadmap</span>
+            </div>
+            <p class="skill-desc">From a flagged transaction set, produces a factual narrative for the L1 reviewer: counterparties, pattern, timeline, anomalies.</p>
+            <p class="skill-when">SAR / STR preparation; investigations file.</p>
+            <div class="skill-meta">
+              <span class="tag layer domain">AML</span>
+              <span class="tag priority medium">Medium priority</span>
+              <span class="owner">AML Unit</span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- ─ Wealth ─ -->
+      <div class="domain-group" data-domain="wealth">
+        <div class="domain-head">
+          <h3>Domain · Wealth &amp; Portfolio</h3>
+          <span class="domain-owner">Owned by <strong>Investment Compliance</strong> &amp; Front Office</span>
+          <span class="domain-count">3 skills · 0 built</span>
+        </div>
+
+        <div class="skill-grid">
+
+          <article class="skill-card" data-status="roadmap" data-domain="wealth" data-priority="high">
+            <div class="skill-card-top">
+              <div class="skill-name">portfolio-narrative-generator</div>
+              <span class="status roadmap">Roadmap</span>
+            </div>
+            <p class="skill-desc">Client‑facing quarterly portfolio commentary — drafts only, in the client's preferred language, with mandatory disclaimers.</p>
+            <p class="skill-when">Quarterly review cycles; ad‑hoc client briefings.</p>
+            <div class="skill-meta">
+              <span class="tag layer domain">Wealth</span>
+              <span class="tag priority high">High priority</span>
+              <span class="owner">Investment Compliance + Front Office</span>
+            </div>
+          </article>
+
+          <article class="skill-card" data-status="roadmap" data-domain="wealth" data-priority="high">
+            <div class="skill-card-top">
+              <div class="skill-name">suitability-checker</div>
+              <span class="status roadmap">Roadmap</span>
+            </div>
+            <p class="skill-desc">Given a proposed trade and a client profile, returns a structured suitability review under FinSA / MiFID II.</p>
+            <p class="skill-when">Pre‑trade check on advisory and discretionary orders.</p>
+            <div class="skill-meta">
+              <span class="tag layer domain">Wealth</span>
+              <span class="tag priority high">High priority</span>
+              <span class="owner">Investment Compliance</span>
+            </div>
+          </article>
+
+          <article class="skill-card" data-status="roadmap" data-domain="wealth" data-priority="high">
+            <div class="skill-card-top">
+              <div class="skill-name">cross-border-checker</div>
+              <span class="status roadmap">Roadmap</span>
+            </div>
+            <p class="skill-desc">Given an RM action and a client domicile, returns green / amber / red against the Cross‑Border Country Manual with the exact restriction cited.</p>
+            <p class="skill-when">Travel pre‑approval; new prospect outreach; remote onboarding.</p>
+            <div class="skill-meta">
+              <span class="tag layer domain">Wealth</span>
+              <span class="tag priority high">High priority</span>
+              <span class="owner">Cross‑Border Compliance</span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- ─ Legal ─ -->
+      <div class="domain-group" data-domain="legal">
+        <div class="domain-head">
+          <h3>Domain · Legal &amp; Contracts</h3>
+          <span class="domain-owner">Owned by <strong>Legal</strong></span>
+          <span class="domain-count">3 skills · 0 built</span>
+        </div>
+
+        <div class="skill-grid">
+
+          <article class="skill-card" data-status="roadmap" data-domain="legal" data-priority="high">
+            <div class="skill-card-top">
+              <div class="skill-name">contract-redliner</div>
+              <span class="status roadmap">Roadmap</span>
+            </div>
+            <p class="skill-desc">Compares a counterparty draft against Pictet templates. Highlights deviations, flags fallback positions, drafts revisions.</p>
+            <p class="skill-when">Vendor agreements, ISDAs, custody contracts.</p>
+            <div class="skill-meta">
+              <span class="tag layer domain">Legal</span>
+              <span class="tag priority high">High priority</span>
+              <span class="owner">Legal</span>
+            </div>
+          </article>
+
+          <article class="skill-card" data-status="roadmap" data-domain="legal" data-priority="medium">
+            <div class="skill-card-top">
+              <div class="skill-name">nda-extractor</div>
+              <span class="status roadmap">Roadmap</span>
+            </div>
+            <p class="skill-desc">From an NDA: term length, restricted use, jurisdiction, governing law, key obligations — into a structured one‑page summary.</p>
+            <p class="skill-when">High volume of NDA review.</p>
+            <div class="skill-meta">
+              <span class="tag layer domain">Legal</span>
+              <span class="tag priority medium">Medium priority</span>
+              <span class="owner">Legal</span>
+            </div>
+          </article>
+
+          <article class="skill-card" data-status="roadmap" data-domain="legal" data-priority="medium">
+            <div class="skill-card-top">
+              <div class="skill-name">enforcement-precedent-finder</div>
+              <span class="status roadmap">Roadmap</span>
+            </div>
+            <p class="skill-desc">Searches public FINMA / HKMA / SFC enforcement decisions for similar fact patterns; surfaces sanctions, themes, supervisory direction.</p>
+            <p class="skill-when">Internal investigations; supervisory dialogue preparation.</p>
+            <div class="skill-meta">
+              <span class="tag layer domain">Legal</span>
+              <span class="tag priority medium">Medium priority</span>
+              <span class="owner">Legal + Group Compliance</span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- ─ Ops & Tech ─ -->
+      <div class="domain-group" data-domain="ops">
+        <div class="domain-head">
+          <h3>Domain · Operations &amp; Technology</h3>
+          <span class="domain-owner">Owned by <strong>COO</strong> &amp; IT Risk</span>
+          <span class="domain-count">2 skills · 0 built</span>
+        </div>
+
+        <div class="skill-grid">
+
+          <article class="skill-card" data-status="roadmap" data-domain="ops" data-priority="medium">
+            <div class="skill-card-top">
+              <div class="skill-name">incident-write-up</div>
+              <span class="status roadmap">Roadmap</span>
+            </div>
+            <p class="skill-desc">Structured post‑incident report from raw notes: timeline, impact, root cause hypothesis, corrective actions, lessons.</p>
+            <p class="skill-when">Within 24 hours of any operational or IT incident.</p>
+            <div class="skill-meta">
+              <span class="tag layer domain">Operations</span>
+              <span class="tag priority medium">Medium priority</span>
+              <span class="owner">IT Risk</span>
+            </div>
+          </article>
+
+          <article class="skill-card" data-status="roadmap" data-domain="ops" data-priority="medium">
+            <div class="skill-card-top">
+              <div class="skill-name">vendor-risk-questionnaire</div>
+              <span class="status roadmap">Roadmap</span>
+            </div>
+            <p class="skill-desc">First‑draft answers for inbound vendor security questionnaires, sourced from approved policy positions only.</p>
+            <p class="skill-when">When a counterparty asks for our infosec posture in 200 questions.</p>
+            <div class="skill-meta">
+              <span class="tag layer domain">Operations</span>
+              <span class="tag priority medium">Medium priority</span>
+              <span class="owner">IT Risk + Procurement</span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- ─ HR ─ -->
+      <div class="domain-group" data-domain="hr">
+        <div class="domain-head">
+          <h3>Domain · HR &amp; People</h3>
+          <span class="domain-owner">Owned by <strong>HR</strong></span>
+          <span class="domain-count">2 skills · 0 built</span>
+        </div>
+
+        <div class="skill-grid">
+
+          <article class="skill-card" data-status="roadmap" data-domain="hr" data-priority="medium">
+            <div class="skill-card-top">
+              <div class="skill-name">hr-policy-qa</div>
+              <span class="status roadmap">Roadmap</span>
+            </div>
+            <p class="skill-desc">A scoped instance of <span class="mono">policy-lookup</span> for HR policies — leave, mobility, conduct, parental, expenses.</p>
+            <p class="skill-when">Anywhere an employee would normally email HR a one‑line question.</p>
+            <div class="skill-meta">
+              <span class="tag layer domain">HR</span>
+              <span class="tag priority medium">Medium priority</span>
+              <span class="owner">HR</span>
+            </div>
+          </article>
+
+          <article class="skill-card" data-status="roadmap" data-domain="hr" data-priority="low">
+            <div class="skill-card-top">
+              <div class="skill-name">role-description-drafter</div>
+              <span class="status roadmap">Roadmap</span>
+            </div>
+            <p class="skill-desc">Drafts a role description from a one‑line brief, using Pictet conventions and grade‑level expectations.</p>
+            <p class="skill-when">Hiring pipeline; internal mobility cycles.</p>
+            <div class="skill-meta">
+              <span class="tag layer domain">HR</span>
+              <span class="tag priority low">Low priority</span>
+              <span class="owner">HR</span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <p id="no-results" style="display:none; text-align:center; color:var(--text-muted); padding:var(--space-6) 0;">No skills match the current filter.</p>
+
+    </div>
+  </section>
+
+  <!-- ─── Lifecycle ────────────────────────────────────────────── -->
+  <section class="block">
+    <div class="container">
+      <div class="section-head">
+        <h2>Lifecycle of a skill</h2>
+        <p class="lede">
+          The path from idea to published skill — and the periodic review that keeps it honest.
+        </p>
+      </div>
+
+      <div class="lifecycle">
+        <div class="lifecycle-step">
+          <div class="step-num">STEP 01</div>
+          <h4>Author</h4>
+          <p>A team member drafts the skill against the catalogue template: name, description, instructions, references, examples.</p>
+        </div>
+
+        <div class="lifecycle-step">
+          <div class="step-num">STEP 02</div>
+          <h4>Function sign‑off</h4>
+          <p>The owning function (Compliance, AML, Legal…) reviews and approves. Sign‑off is recorded — no sign‑off, no publication.</p>
+        </div>
+
+        <div class="lifecycle-step">
+          <div class="step-num">STEP 03</div>
+          <h4>Central review</h4>
+          <p>The AI Centre of Excellence checks alignment with the seven governance principles and tests the skill end‑to‑end.</p>
+        </div>
+
+        <div class="lifecycle-step">
+          <div class="step-num">STEP 04</div>
+          <h4>Publish</h4>
+          <p>The skill ships into the bank's Pictet‑approved Claude environment, with its owner, version, and last‑review date visible.</p>
+        </div>
+
+        <div class="lifecycle-step">
+          <div class="step-num">STEP 05</div>
+          <h4>Quarterly review</h4>
+          <p>Owners verify references, retest behaviour, and confirm the skill is still needed. Retiring a stale skill is a feature.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Phasing ────────────────────────────────────────────── -->
+  <section class="block">
+    <div class="container">
+      <div class="section-head">
+        <h2>Phased rollout</h2>
+        <p class="lede">
+          From today's competition demo to a federated library, in measurable steps.
+        </p>
+      </div>
+
+      <div class="phases">
+        <div class="phase phase-0">
+          <div class="phase-label">Phase 0 — today</div>
+          <h4>Competition demo</h4>
+          <p class="phase-when">May 2026</p>
+          <ul>
+            <li>4 built skills, working hero demo</li>
+            <li>Library map &amp; governance principles</li>
+            <li>This catalogue</li>
+          </ul>
+        </div>
+        <div class="phase phase-1">
+          <div class="phase-label">Phase 1 — MVP</div>
+          <h4>Pilot rollout</h4>
+          <p class="phase-when">+1 month</p>
+          <ul>
+            <li>Top 4 universal skills built</li>
+            <li>Top 2 skills per domain built</li>
+            <li>Pilot with 2–3 teams</li>
+          </ul>
+        </div>
+        <div class="phase phase-2">
+          <div class="phase-label">Phase 2 — scale</div>
+          <h4>Bank‑wide</h4>
+          <p class="phase-when">+3 months</p>
+          <ul>
+            <li>Full universal layer</li>
+            <li>Domain skills as functions sign off</li>
+            <li>Contribution path open to all</li>
+          </ul>
+        </div>
+        <div class="phase phase-3">
+          <div class="phase-label">Phase 3 — federated</div>
+          <h4>Local authorship</h4>
+          <p class="phase-when">+6 months</p>
+          <ul>
+            <li>Skills authored locally by business teams</li>
+            <li>Central governance only</li>
+            <li>Per‑function skill libraries with shared standards</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Footer ────────────────────────────────────────────── -->
+  <footer>
+    <div class="container footer-inner">
+      <div>
+        <strong>Pictet · Claude Skills Catalogue</strong> · Phase 0 demonstrator<br/>
+        Innovation Competition entry · 2026
+      </div>
+      <div class="legend">
+        <span><span class="legend-dot" style="background: var(--built);"></span>Built</span>
+        <span><span class="legend-dot" style="background: var(--roadmap);"></span>Roadmap</span>
+        <span><span class="legend-dot" style="background: var(--prio-high);"></span>High priority</span>
+        <span><span class="legend-dot" style="background: var(--prio-medium);"></span>Medium</span>
+        <span><span class="legend-dot" style="background: var(--prio-low);"></span>Low</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ─── Filter logic ────────────────────────────────────────────── -->
+  <script>
+    (function () {
+      const pills    = document.querySelectorAll('.pill');
+      const cards    = document.querySelectorAll('.skill-card');
+      const groups   = document.querySelectorAll('.domain-group');
+      const search   = document.getElementById('search');
+      const noResults= document.getElementById('no-results');
+
+      let activeFilter = 'all';
+      let query        = '';
+
+      function applyFilters () {
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+          const status = card.dataset.status;
+          const domain = card.dataset.domain;
+          const name   = card.querySelector('.skill-name').textContent.toLowerCase();
+
+          const filterMatch =
+                activeFilter === 'all'    ? true
+              : activeFilter === 'built'   ? status === 'built'
+              : activeFilter === 'roadmap' ? status === 'roadmap'
+              : domain === activeFilter;
+
+          const searchMatch = !query || name.includes(query);
+
+          const show = filterMatch && searchMatch;
+          card.classList.toggle('hidden', !show);
+          if (show) visibleCount++;
+        });
+
+        groups.forEach(group => {
+          const anyVisible = Array.from(group.querySelectorAll('.skill-card'))
+                                  .some(c => !c.classList.contains('hidden'));
+          group.style.display = anyVisible ? '' : 'none';
+        });
+
+        noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+      }
+
+      pills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          pills.forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          activeFilter = pill.dataset.filter;
+          applyFilters();
+        });
+      });
+
+      search.addEventListener('input', e => {
+        query = e.target.value.trim().toLowerCase();
+        applyFilters();
+      });
+    })();
+  </script>
+
+</body>
+</html>
