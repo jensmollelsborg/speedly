@@ -1,6 +1,12 @@
 ---
 name: reg-impact-assessor
 description: Produce a structured impact assessment for a new or proposed regulation. Use whenever the user shares a regulation (URL, PDF, pasted text, or a reference like "FINMA Circular 2026/3") and asks what it means for Pictet — questions like "what would this change for us?", "is this material?", "draft an impact note", "do we need to update our procedures?" Output covers: scope, affected business lines, requirement breakdown, gap analysis vs current policy, action items with owners and deadlines, and a board-level summary.
+status: built
+domain: regulatory
+owner: Group Compliance
+order: 20
+summary: Decomposes a new regulation into numbered requirements, runs gap analysis vs current policy, drafts an action plan and an ExCo summary.
+when_to_use: Forward-looking — new regulation arrives, what do we change?
 ---
 
 # Regulation Impact Assessor

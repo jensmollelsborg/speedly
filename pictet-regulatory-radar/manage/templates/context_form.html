@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+{% block title %}{% if mode == 'new' %}New context{% else %}Edit {{ fields.name }}{% endif %}{% endblock %}
+{% block content %}
+<section class="block">
+  <div class="container">
+    <div class="breadcrumbs">
+      <a href="{{ url_for('catalogue_view') }}">Catalogue</a>
+      {% if mode == 'edit' %}
+        · <a href="{{ url_for('context_view', name=fields.name) }}" class="mono">{{ fields.name }}</a> · Edit
+      {% else %}
+        · New context
+      {% endif %}
+    </div>
+
+    <div class="page-head">
+      <h1>{% if mode == 'new' %}New context{% else %}Edit <span class="skill-name-mono">{{ fields.name }}</span>{% endif %}</h1>
+    </div>
+
+    {% if errors %}
+      <div class="flash flash-error">{{ errors|length }} field{{ 's' if errors|length != 1 else '' }} need attention. See below.</div>
+    {% endif %}
+
+    <form method="post" action="{% if mode == 'new' %}{{ url_for('context_new') }}{% else %}{{ url_for('context_edit_post', name=fields.name) }}{% endif %}">
+
+      <div class="card">
+        <h2>Identity</h2>
+        <div class="form-row">
+          <label for="f-name">name</label>
+          <input type="text" id="f-name" name="name" value="{{ fields.name or '' }}"
+                 {% if mode == 'edit' %}readonly style="background: var(--surface-alt); color: var(--text-muted);"{% endif %}
+                 placeholder="e.g. pictet-singapore">
+          {% if errors.get('name') %}<div class="field-error">{{ errors.name }}</div>{% endif %}
+          <div class="field-hint">lowercase-kebab-case. Becomes the folder name and is shown in the catalogue card meta line.</div>
+        </div>
+        <div class="form-row">
+          <label for="f-title">title <span style="text-transform:none; color:var(--text-faint);">— shown as the card heading</span></label>
+          <input type="text" id="f-title" name="title" value="{{ fields.title or '' }}" placeholder="e.g. Pictet Asia Limited (Singapore Branch)">
+          {% if errors.get('title') %}<div class="field-error">{{ errors.title }}</div>{% endif %}
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Classification</h2>
+        <div class="form-row split">
+          <div>
+            <label for="f-type">type</label>
+            <select id="f-type" name="type">
+              {% for t in context_types %}
+                <option value="{{ t }}" {% if fields.type == t %}selected{% endif %}>{{ t }}</option>
+              {% endfor %}
+            </select>
+            {% if errors.get('type') %}<div class="field-error">{{ errors.type }}</div>{% endif %}
+          </div>
+          <div>
+            <label for="f-owner">owner</label>
+            <input type="text" id="f-owner" name="owner" value="{{ fields.owner or '' }}" placeholder="e.g. Pictet Asia Singapore + Group Compliance">
+            {% if errors.get('owner') %}<div class="field-error">{{ errors.owner }}</div>{% endif %}
+          </div>
+        </div>
+        <div class="form-row split">
+          <div>
+            <label for="f-jurisdiction">jurisdiction <span style="text-transform:none; color:var(--text-faint);">— optional</span></label>
+            <input type="text" id="f-jurisdiction" name="jurisdiction" value="{{ fields.jurisdiction or '' }}" placeholder="e.g. SG, CH, HK">
+          </div>
+          <div>
+            <label for="f-regulator">regulator <span style="text-transform:none; color:var(--text-faint);">— optional</span></label>
+            <input type="text" id="f-regulator" name="regulator" value="{{ fields.regulator or '' }}" placeholder="e.g. MAS, FINMA, HKMA">
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="f-summary">summary <span style="text-transform:none; color:var(--text-faint);">— one sentence on the card</span></label>
+          <textarea id="f-summary" name="summary" rows="2">{{ fields.summary or '' }}</textarea>
+          {% if errors.get('summary') %}<div class="field-error">{{ errors.summary }}</div>{% endif %}
+        </div>
+        <div class="form-row">
+          <label for="f-tags">tags <span style="text-transform:none; color:var(--text-faint);">— optional, comma-separated</span></label>
+          <input type="text" id="f-tags" name="tags" value="{{ fields.tags or '' }}" placeholder="e.g. entity, sg, mas, wealth">
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Body — Markdown</h2>
+        <div class="editor-split">
+          <textarea id="body" name="body" placeholder="# Title&#10;&#10;## Business activities&#10;&#10;## Regulator and licence&#10;&#10;## Applicable regulatory reports&#10;&#10;## Internal owners">{{ body }}</textarea>
+          <div class="preview" id="preview"><em style="color: var(--text-faint);">Preview appears here as you type.</em></div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button type="submit" class="btn primary">{% if mode == 'new' %}Create context{% else %}Save changes{% endif %}</button>
+        <a class="btn" href="{% if mode == 'edit' %}{{ url_for('context_view', name=fields.name) }}{% else %}{{ url_for('catalogue_view') }}{% endif %}">Cancel</a>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="{{ url_for('static', filename='editor.js') }}"></script>
+{% endblock %}

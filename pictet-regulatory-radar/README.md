@@ -11,34 +11,69 @@ pictet-regulatory-radar/
 ├── README.md                          ← you are here
 ├── library-map.md                     ← taxonomy of universal + domain skills (the "slide")
 ├── catalogue/
-│   └── index.html                     ← rendered skills catalogue (open in any browser)
+│   ├── template.html                  ← page template with {{placeholders}}
+│   ├── build.py                       ← reads skills/**/SKILL.md → renders index.html
+│   ├── serve.py                       ← tiny static server for local preview
+│   └── index.html                     ← generated; open in any browser
 ├── demo/
 │   └── demo-script.md                 ← 3-minute hero demo walkthrough
-├── policy-lookup/                     ← universal skill
-│   ├── SKILL.md
-│   └── references/
-│       ├── policy-index.md
-│       └── sample-policies.md         ← REPLACE with real Pictet excerpts before demo
-├── regulator-watch/                   ← domain skill
-│   ├── SKILL.md
-│   └── references/
-│       ├── regulator-sources.md
-│       └── topic-taxonomy.md
-├── reg-impact-assessor/               ← domain skill (new reg → action plan)
-│   ├── SKILL.md
-│   └── references/
-│       ├── impact-assessment-template.md
-│       ├── materiality-rubric.md
-│       └── owner-functions.md
-└── policy-compliance-checker/         ← domain skill (internal policy → coverage vs reg)
-    ├── SKILL.md
-    ├── references/
-    │   ├── coverage-rubric.md
-    │   ├── compliance-report-template.md
-    │   └── regulatory-source-checklist.md
-    └── sample-runs/
-        └── helvas-outsourcing-vs-finma-2018-3.md  ← worked example
+└── skills/                            ← single source of truth (27 skills)
+    ├── policy-lookup/                 ← universal · built
+    │   ├── SKILL.md
+    │   └── references/
+    │       ├── policy-index.md
+    │       └── sample-policies.md     ← REPLACE with real Pictet excerpts before demo
+    ├── regulator-watch/               ← regulatory · built
+    │   ├── SKILL.md
+    │   └── references/
+    │       ├── regulator-sources.md
+    │       └── topic-taxonomy.md
+    ├── reg-impact-assessor/           ← regulatory · built
+    │   ├── SKILL.md
+    │   └── references/…
+    ├── policy-compliance-checker/     ← regulatory · built
+    │   ├── SKILL.md
+    │   ├── references/…
+    │   └── sample-runs/
+    │       └── helvas-outsourcing-vs-finma-2018-3.md  ← worked example
+    └── <23 roadmap stubs>/SKILL.md    ← frontmatter + description, no body yet
 ```
+
+Each `SKILL.md` carries catalogue metadata in its YAML frontmatter:
+
+```yaml
+---
+name: regulator-watch
+description: Monitor financial-regulator publication pages…   # Claude invocation desc
+status: built              # built | roadmap
+domain: regulatory         # universal | regulatory | aml | wealth | legal | ops | hr
+owner: Group Compliance
+order: 10                  # sort key within a (status, priority) bucket
+summary: Monitors FINMA, HKMA and SFC publication pages…      # short card text
+when_to_use: "What's new from FINMA this week?" — Monday-morning routine.
+# priority: high           # roadmap only — high | medium | low
+---
+```
+
+## Three ways to work with the catalogue
+
+| Tool | What it does | When |
+|---|---|---|
+| `python3 catalogue/build.py` | Renders the static `catalogue/index.html` snapshot from `skills/**/SKILL.md` | Before a commit or a demo |
+| `python3 manage/app.py` | Local Flask editor — view, create, and edit skills + contexts in a browser on `http://127.0.0.1:8765/` | Day-to-day authoring |
+| `python3 mcp_server/server.py` | MCP server exposing 21 CRUD + lookup tools to Claude | Authoring or bulk operations through Claude (Desktop or Code) |
+
+Both share `catalogue/core.py` for schema, parsing, validation, and HTML
+rendering. The static build is stdlib-only (no installs); the editor adds one
+dependency, Flask:
+
+```bash
+pip install -r manage/requirements.txt
+python3 manage/app.py
+```
+
+The editor regenerates `catalogue/index.html` after every save, so the static
+snapshot stays in sync with the live tree.
 
 ## The four skills
 
@@ -64,7 +99,7 @@ Each skill folder is independent. Two ways to deploy:
 
 ### Option A — upload each skill folder separately (recommended)
 
-For each of `policy-lookup/`, `regulator-watch/`, and `reg-impact-assessor/`:
+For each of `skills/policy-lookup/`, `skills/regulator-watch/`, `skills/reg-impact-assessor/`, and `skills/policy-compliance-checker/`:
 
 1. Zip the folder (so the zip contains `SKILL.md` and `references/` at the root).
 2. In Claude.ai → Settings → Capabilities → Skills, upload the zip.
@@ -72,12 +107,12 @@ For each of `policy-lookup/`, `regulator-watch/`, and `reg-impact-assessor/`:
 
 ### Option B — upload the full bundle
 
-Zip the entire `pictet-regulatory-radar/` directory and upload as a single skills package, if your Claude.ai environment supports bundle uploads.
+Zip the entire `pictet-regulatory-radar/skills/` directory and upload as a single skills package, if your Claude.ai environment supports bundle uploads.
 
 ## Before the demo (checklist)
 
-1. **Replace illustrative content with real excerpts.** `policy-lookup/references/sample-policies.md` ships with *fictional* Pictet-style excerpts for demonstration. Replace with sanitised real excerpts (Compliance-approved) and update `policy-index.md`.
-2. **Verify regulator URLs.** Open each URL in `regulator-watch/references/regulator-sources.md` to confirm none have moved.
+1. **Replace illustrative content with real excerpts.** `skills/policy-lookup/references/sample-policies.md` ships with *fictional* Pictet-style excerpts for demonstration. Replace with sanitised real excerpts (Compliance-approved) and update `policy-index.md`.
+2. **Verify regulator URLs.** Open each URL in `skills/regulator-watch/references/regulator-sources.md` to confirm none have moved.
 3. **Pick the demo regulation** (see `demo/demo-script.md` for criteria).
 4. **Dry-run the full demo** at least once end-to-end and time it.
 

@@ -1,0 +1,120 @@
+{% extends "layout.html" %}
+{% block title %}{% if mode == 'new' %}New skill{% else %}Edit {{ fields.name }}{% endif %}{% endblock %}
+{% block content %}
+<section class="block">
+  <div class="container">
+    <div class="breadcrumbs">
+      <a href="{{ url_for('catalogue_view') }}">Catalogue</a>
+      {% if mode == 'edit' %}
+        · <a href="{{ url_for('skill_view', name=fields.name) }}" class="mono">{{ fields.name }}</a> · Edit
+      {% else %}
+        · New skill
+      {% endif %}
+    </div>
+
+    <div class="page-head">
+      <h1>{% if mode == 'new' %}New skill{% else %}Edit <span class="skill-name-mono">{{ fields.name }}</span>{% endif %}</h1>
+    </div>
+
+    {% if errors %}
+      <div class="flash flash-error">{{ errors|length }} field{{ 's' if errors|length != 1 else '' }} need attention. See below.</div>
+    {% endif %}
+
+    <form method="post" action="{% if mode == 'new' %}{{ url_for('skill_new') }}{% else %}{{ url_for('skill_edit_post', name=fields.name) }}{% endif %}">
+
+      <div class="card">
+        <h2>Identity</h2>
+        <div class="form-row">
+          <label for="f-name">name</label>
+          <input type="text" id="f-name" name="name" value="{{ fields.name or '' }}"
+                 {% if mode == 'edit' %}readonly style="background: var(--surface-alt); color: var(--text-muted);"{% endif %}
+                 placeholder="e.g. policy-lookup">
+          {% if errors.get('name') %}<div class="field-error">{{ errors.name }}</div>{% endif %}
+          <div class="field-hint">lowercase-kebab-case. Becomes the folder name and is shown in the catalogue.</div>
+        </div>
+        <div class="form-row">
+          <label for="f-description">description <span style="text-transform:none; color:var(--text-faint);">— Claude's invocation prompt</span></label>
+          <textarea id="f-description" name="description" rows="3" placeholder="A long-form description Claude uses to decide when to invoke this skill.">{{ fields.description or '' }}</textarea>
+          {% if errors.get('description') %}<div class="field-error">{{ errors.description }}</div>{% endif %}
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Catalogue card</h2>
+        <div class="form-row split">
+          <div>
+            <label for="f-status">status</label>
+            <select id="f-status" name="status">
+              {% for s in ['built', 'roadmap'] %}
+                <option value="{{ s }}" {% if fields.status == s %}selected{% endif %}>{{ s }}</option>
+              {% endfor %}
+            </select>
+            {% if errors.get('status') %}<div class="field-error">{{ errors.status }}</div>{% endif %}
+          </div>
+          <div>
+            <label for="f-domain">domain</label>
+            <select id="f-domain" name="domain">
+              <option value="">—</option>
+              {% for d in domain_config.keys() %}
+                <option value="{{ d }}" {% if fields.domain == d %}selected{% endif %}>{{ d }}</option>
+              {% endfor %}
+            </select>
+            {% if errors.get('domain') %}<div class="field-error">{{ errors.domain }}</div>{% endif %}
+          </div>
+        </div>
+        <div class="form-row split">
+          <div>
+            <label for="f-owner">owner</label>
+            <input type="text" id="f-owner" name="owner" value="{{ fields.owner or '' }}" placeholder="e.g. Group Compliance">
+            {% if errors.get('owner') %}<div class="field-error">{{ errors.owner }}</div>{% endif %}
+          </div>
+          <div>
+            <label for="f-priority">priority <span style="text-transform:none; color:var(--text-faint);">— roadmap only</span></label>
+            <select id="f-priority" name="priority">
+              <option value="">—</option>
+              {% for p in ['high', 'medium', 'low'] %}
+                <option value="{{ p }}" {% if fields.priority == p %}selected{% endif %}>{{ p }}</option>
+              {% endfor %}
+            </select>
+            {% if errors.get('priority') %}<div class="field-error">{{ errors.priority }}</div>{% endif %}
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="f-order">order</label>
+          <input type="number" id="f-order" name="order" value="{{ fields.order or '10' }}" min="0" step="10">
+          {% if errors.get('order') %}<div class="field-error">{{ errors.order }}</div>{% endif %}
+          <div class="field-hint">Lower numbers come first within a (status, priority) bucket. Use 10/20/30 to leave room.</div>
+        </div>
+        <div class="form-row">
+          <label for="f-summary">summary <span style="text-transform:none; color:var(--text-faint);">— bold sentence on the card</span></label>
+          <textarea id="f-summary" name="summary" rows="2">{{ fields.summary or '' }}</textarea>
+          {% if errors.get('summary') %}<div class="field-error">{{ errors.summary }}</div>{% endif %}
+        </div>
+        <div class="form-row">
+          <label for="f-when">when_to_use <span style="text-transform:none; color:var(--text-faint);">— italic line under the summary</span></label>
+          <textarea id="f-when" name="when_to_use" rows="2">{{ fields.when_to_use or '' }}</textarea>
+          {% if errors.get('when_to_use') %}<div class="field-error">{{ errors.when_to_use }}</div>{% endif %}
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Skill body — Markdown</h2>
+        <div class="editor-split">
+          <textarea id="body" name="body" placeholder="# Skill name&#10;&#10;Step-by-step instructions Claude follows when this skill is invoked.">{{ body }}</textarea>
+          <div class="preview" id="preview"><em style="color: var(--text-faint);">Preview appears here as you type.</em></div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button type="submit" class="btn primary">{% if mode == 'new' %}Create skill{% else %}Save changes{% endif %}</button>
+        <a class="btn" href="{% if mode == 'edit' %}{{ url_for('skill_view', name=fields.name) }}{% else %}{{ url_for('catalogue_view') }}{% endif %}">Cancel</a>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="{{ url_for('static', filename='editor.js') }}"></script>
+{% endblock %}

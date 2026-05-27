@@ -279,18 +279,55 @@
 
     .filter-bar {
       display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      margin-bottom: var(--space-6);
+      padding: var(--space-4);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+    }
+
+    .filter-row {
+      display: flex;
       gap: var(--space-2);
       flex-wrap: wrap;
-      margin-bottom: var(--space-6);
       align-items: center;
     }
 
     .filter-bar .filter-label {
-      font-size: 12px;
+      font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--text-muted);
-      margin-right: var(--space-3);
+      min-width: 70px;
+      font-weight: 600;
+    }
+
+    .filter-select {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .filter-select select {
+      font: inherit;
+      font-size: 13px;
+      text-transform: none;
+      letter-spacing: 0;
+      color: var(--text);
+      padding: 6px 24px 6px 10px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--r-sm);
+      background: var(--surface);
+      cursor: pointer;
+    }
+    .filter-select select:focus {
+      outline: 2px solid var(--accent-line);
+      outline-offset: 1px;
     }
 
     .pill {
@@ -441,6 +478,16 @@
 
     .status.built  { color: var(--built);   background: var(--built-bg); }
     .status.roadmap{ color: var(--roadmap); background: var(--roadmap-bg); }
+
+    /* Context cards — same layout as skill cards, distinct accent. */
+    .context-card { border-left: 3px solid var(--dom-aml); }
+    .status.context-type { color: var(--dom-aml); background: rgba(107, 45, 63, 0.08); }
+    .status.type-entity        { color: var(--dom-aml);    background: rgba(107, 45, 63, 0.08); }
+    .status.type-report        { color: var(--dom-ops);    background: rgba(74, 85, 104, 0.08); }
+    .status.type-jurisdiction  { color: var(--dom-legal);  background: rgba(107, 77, 45, 0.08); }
+    .status.type-policy-area   { color: var(--dom-wealth); background: rgba(45, 90, 63, 0.08); }
+    .status.type-other         { color: var(--text-muted); background: var(--surface-alt); }
+    .tag.layer.context { color: var(--dom-aml); background: rgba(107, 45, 63, 0.08); }
 
     .skill-desc {
       color: var(--text);
@@ -692,7 +739,7 @@
 
       <div class="kpis">
         <div class="kpi">
-          <div class="kpi-num">4</div>
+          <div class="kpi-num">7</div>
           <div class="kpi-label">Built for the demo</div>
         </div>
         <div class="kpi">
@@ -700,7 +747,7 @@
           <div class="kpi-label">On the roadmap</div>
         </div>
         <div class="kpi">
-          <div class="kpi-num">7</div>
+          <div class="kpi-num">10</div>
           <div class="kpi-label">Owning functions</div>
         </div>
         <div class="kpi">
@@ -795,53 +842,131 @@
         </p>
       </div>
 
-      <!-- Filter bar -->
-      <div class="filter-bar" role="toolbar" aria-label="Filter skills">
-        <span class="filter-label">Filter</span>
-        <button class="pill active" data-filter="all">All <span class="count" id="count-all">27</span></button>
-        <button class="pill" data-filter="built">Built <span class="count">4</span></button>
-        <button class="pill" data-filter="roadmap">Roadmap <span class="count">23</span></button>
-        <button class="pill" data-filter="universal">Universal <span class="count">8</span></button>
-        <button class="pill" data-filter="regulatory">Regulatory <span class="count">6</span></button>
-        <button class="pill" data-filter="aml">AML <span class="count">3</span></button>
-        <button class="pill" data-filter="wealth">Wealth <span class="count">3</span></button>
-        <button class="pill" data-filter="legal">Legal <span class="count">3</span></button>
-        <button class="pill" data-filter="ops">Ops &amp; Tech <span class="count">2</span></button>
-        <button class="pill" data-filter="hr">HR <span class="count">2</span></button>
-        <input type="search" class="search-input" placeholder="Search by name…" id="search" aria-label="Search by skill name" />
-      </div>
+      <!-- Filter bar (rendered server-side from skills + contexts) -->
+      <div class="filter-bar" role="toolbar" aria-label="Filter">
+  <div class="filter-row">
+    <span class="filter-label">Status</span>
+    <button class="pill active" data-axis="status" data-value="">All <span class="count">38</span></button><button class="pill" data-axis="status" data-value="built">Built <span class="count">7</span></button><button class="pill" data-axis="status" data-value="roadmap">Roadmap <span class="count">23</span></button>
+  </div>
+  <div class="filter-row">
+    <span class="filter-label">Type</span>
+    <button class="pill active" data-axis="type" data-value="">All <span class="count">38</span></button><button class="pill" data-axis="type" data-value="skill">Skills <span class="count">30</span></button><button class="pill" data-axis="type" data-value="context">Contexts <span class="count">8</span></button>
+  </div>
+  <div class="filter-row">
+    <span class="filter-label">Domain</span>
+    <button class="pill active" data-axis="domain" data-value="">All <span class="count">38</span></button><button class="pill" data-axis="domain" data-value="universal">Universal <span class="count">8</span></button><button class="pill" data-axis="domain" data-value="regulatory">Regulatory <span class="count">9</span></button><button class="pill" data-axis="domain" data-value="aml">AML <span class="count">3</span></button><button class="pill" data-axis="domain" data-value="wealth">Wealth <span class="count">3</span></button><button class="pill" data-axis="domain" data-value="legal">Legal <span class="count">3</span></button><button class="pill" data-axis="domain" data-value="ops">Ops &amp; Tech <span class="count">2</span></button><button class="pill" data-axis="domain" data-value="hr">HR <span class="count">2</span></button><button class="pill" data-axis="domain" data-value="context">Context <span class="count">8</span></button>
+  </div>
+  <div class="filter-row">
+    <label class="filter-select"><span>Owner</span>
+      <select data-axis="owner"><option value="">All owners</option><option value="group-compliance">Group Compliance (8)</option><option value="ai-centre-of-excellence">AI Centre of Excellence (6)</option><option value="legal">Legal (3)</option><option value="aml-unit">AML Unit (3)</option><option value="corporate-communications">Corporate Communications (2)</option><option value="hr">HR (2)</option><option value="it-risk">IT Risk (2)</option><option value="investment-compliance">Investment Compliance (2)</option><option value="group-finance">Group Finance (2)</option><option value="cross-border-compliance">Cross-Border Compliance (1)</option><option value="regulatory-reporting">Regulatory Reporting (1)</option><option value="aml-unit-geneva">AML Unit (Geneva) (1)</option><option value="pam-compliance">PAM Compliance (1)</option><option value="group-executive-office">Group Executive Office (1)</option><option value="pictet-luxembourg">Pictet Luxembourg (1)</option><option value="pictet-asia-singapore">Pictet Asia Singapore (1)</option><option value="finance-luxembourg">Finance Luxembourg (1)</option></select>
+    </label>
+    <label class="filter-select"><span>Jurisdiction</span><select data-axis="jurisdiction"><option value="">All jurisdictions</option><option value="CH">CH (3)</option><option value="CH, LU, SG">CH, LU, SG (2)</option><option value="LU">LU (2)</option><option value="SG">SG (1)</option></select></label>
+    <input type="search" class="search-input" id="search" placeholder="Search by name…" aria-label="Search by name">
+  </div>
+</div>
+
+<script>
+(function () {
+  function init() {
+    const root = document.querySelector('.filter-bar');
+    if (!root) return;
+    const cards = document.querySelectorAll('.skill-card');
+    const groups = document.querySelectorAll('.domain-group');
+    const noResults = document.getElementById('no-results');
+    const filters = { status: '', type: '', domain: '', owner: '', jurisdiction: '' };
+    let query = '';
+
+    function apply() {
+      let visible = 0;
+      cards.forEach(card => {
+        let show = true;
+        for (const axis in filters) {
+          const v = filters[axis];
+          if (!v) continue;
+          const cardValue = card.dataset[axis] || '';
+          if (cardValue !== v) { show = false; break; }
+        }
+        if (show && query) {
+          const nameEl = card.querySelector('.skill-name');
+          const txt = (nameEl ? nameEl.textContent : '').toLowerCase();
+          if (!txt.includes(query)) show = false;
+        }
+        card.classList.toggle('hidden', !show);
+        if (show) visible++;
+      });
+      groups.forEach(group => {
+        const any = Array.from(group.querySelectorAll('.skill-card')).some(c => !c.classList.contains('hidden'));
+        group.style.display = any ? '' : 'none';
+      });
+      if (noResults) noResults.style.display = visible === 0 ? 'block' : 'none';
+    }
+
+    root.querySelectorAll('.pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        const axis = pill.dataset.axis;
+        const value = pill.dataset.value;
+        if (filters[axis] === value) return; // already active
+        root.querySelectorAll('.pill[data-axis="' + axis + '"]').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        filters[axis] = value;
+        apply();
+      });
+    });
+    root.querySelectorAll('select[data-axis]').forEach(sel => {
+      sel.addEventListener('change', () => {
+        filters[sel.dataset.axis] = sel.value;
+        apply();
+      });
+    });
+    const search = document.getElementById('search');
+    if (search) {
+      search.addEventListener('input', e => {
+        query = (e.target.value || '').trim().toLowerCase();
+        apply();
+      });
+    }
+    apply();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
 
       <!-- ─ Universal ─ -->
       <div class="domain-group" data-domain="universal">
         <div class="domain-head">
-          <h3>Universal · Cross‑team</h3>
+          <h3>Universal · Cross-team</h3>
           <span class="domain-owner">Maintained by <strong>AI Centre of Excellence</strong> · content curated by each calling function</span>
           <span class="domain-count">8 skills · 1 built</span>
         </div>
 
         <div class="skill-grid">
 
-          <!-- policy-lookup -->
-          <article class="skill-card" data-status="built" data-domain="universal">
+          <article class="skill-card" data-status="built" data-domain="universal" data-type="skill" data-owner="ai-centre-of-excellence">
             <div class="skill-card-top">
               <div class="skill-name">policy-lookup</div>
               <span class="status built">Built</span>
             </div>
-            <p class="skill-desc">Cited answers from any internal‑policy corpus. Tells you exactly which section applies, quotes the wording, and refuses to guess if it can't find a match.</p>
-            <p class="skill-when">“Does our policy cover X?” · Compliance, HR, IT, Legal — anywhere there's a policy library.</p>
+            <p class="skill-desc">Cited answers from any internal-policy corpus. Tells you exactly which section applies, quotes the wording, and refuses to guess if it can't find a match.</p>
+            <p class="skill-when">"Does our policy cover X?" · Compliance, HR, IT, Legal — anywhere there's a policy library.</p>
             <div class="skill-meta">
               <span class="tag layer universal">Universal</span>
               <span class="owner">AI CoE + corpus owner</span>
             </div>
           </article>
 
-          <article class="skill-card" data-status="roadmap" data-domain="universal" data-priority="high">
+          <article class="skill-card" data-status="roadmap" data-domain="universal" data-priority="high" data-type="skill" data-owner="ai-centre-of-excellence">
             <div class="skill-card-top">
               <div class="skill-name">document-summariser</div>
               <span class="status roadmap">Roadmap</span>
             </div>
             <p class="skill-desc">Structured summary of a long PDF or report: TL;DR, section bullets, key figures, named entities.</p>
-            <p class="skill-when">Replaces the “can you give me the gist?” email loop.</p>
+            <p class="skill-when">Replaces the "can you give me the gist?" email loop.</p>
             <div class="skill-meta">
               <span class="tag layer universal">Universal</span>
               <span class="tag priority high">High priority</span>
@@ -849,13 +974,13 @@
             </div>
           </article>
 
-          <article class="skill-card" data-status="roadmap" data-domain="universal" data-priority="high">
+          <article class="skill-card" data-status="roadmap" data-domain="universal" data-priority="high" data-type="skill" data-owner="ai-centre-of-excellence">
             <div class="skill-card-top">
               <div class="skill-name">meeting-notes-extractor</div>
               <span class="status roadmap">Roadmap</span>
             </div>
-            <p class="skill-desc">From notes or a transcript: decisions, action items with owners, deadlines, follow‑ups.</p>
-            <p class="skill-when">After every committee, board, or town‑hall.</p>
+            <p class="skill-desc">From notes or a transcript: decisions, action items with owners, deadlines, follow-ups.</p>
+            <p class="skill-when">After every committee, board, or town-hall.</p>
             <div class="skill-meta">
               <span class="tag layer universal">Universal</span>
               <span class="tag priority high">High priority</span>
@@ -863,7 +988,7 @@
             </div>
           </article>
 
-          <article class="skill-card" data-status="roadmap" data-domain="universal" data-priority="high">
+          <article class="skill-card" data-status="roadmap" data-domain="universal" data-priority="high" data-type="skill" data-owner="corporate-communications">
             <div class="skill-card-top">
               <div class="skill-name">client-comms-drafter</div>
               <span class="status roadmap">Roadmap</span>
@@ -877,7 +1002,7 @@
             </div>
           </article>
 
-          <article class="skill-card" data-status="roadmap" data-domain="universal" data-priority="medium">
+          <article class="skill-card" data-status="roadmap" data-domain="universal" data-priority="medium" data-type="skill" data-owner="ai-centre-of-excellence">
             <div class="skill-card-top">
               <div class="skill-name">multilingual-translator</div>
               <span class="status roadmap">Roadmap</span>
@@ -891,12 +1016,12 @@
             </div>
           </article>
 
-          <article class="skill-card" data-status="roadmap" data-domain="universal" data-priority="medium">
+          <article class="skill-card" data-status="roadmap" data-domain="universal" data-priority="medium" data-type="skill" data-owner="corporate-communications">
             <div class="skill-card-top">
               <div class="skill-name">pictet-tone-checker</div>
               <span class="status roadmap">Roadmap</span>
             </div>
-            <p class="skill-desc">Reviews a draft for tone, jargon, prohibited claims, missing disclaimers and house‑style violations.</p>
+            <p class="skill-desc">Reviews a draft for tone, jargon, prohibited claims, missing disclaimers and house-style violations.</p>
             <p class="skill-when">Before any external communication leaves the building.</p>
             <div class="skill-meta">
               <span class="tag layer universal">Universal</span>
@@ -905,7 +1030,7 @@
             </div>
           </article>
 
-          <article class="skill-card" data-status="roadmap" data-domain="universal" data-priority="medium">
+          <article class="skill-card" data-status="roadmap" data-domain="universal" data-priority="medium" data-type="skill" data-owner="ai-centre-of-excellence">
             <div class="skill-card-top">
               <div class="skill-name">data-tidy</div>
               <span class="status roadmap">Roadmap</span>
@@ -919,12 +1044,12 @@
             </div>
           </article>
 
-          <article class="skill-card" data-status="roadmap" data-domain="universal" data-priority="low">
+          <article class="skill-card" data-status="roadmap" data-domain="universal" data-priority="low" data-type="skill" data-owner="ai-centre-of-excellence">
             <div class="skill-card-top">
               <div class="skill-name">slide-skeleton</div>
               <span class="status roadmap">Roadmap</span>
             </div>
-            <p class="skill-desc">Turns a one‑pager into a five‑slide outline plus speaker notes.</p>
+            <p class="skill-desc">Turns a one-pager into a five-slide outline plus speaker notes.</p>
             <p class="skill-when">Twenty minutes before the meeting nobody prepared for.</p>
             <div class="skill-meta">
               <span class="tag layer universal">Universal</span>
@@ -941,56 +1066,95 @@
         <div class="domain-head">
           <h3>Domain · Regulatory</h3>
           <span class="domain-owner">Owned by <strong>Group Compliance</strong></span>
-          <span class="domain-count">6 skills · 3 built</span>
+          <span class="domain-count">9 skills · 6 built</span>
         </div>
 
         <div class="skill-grid">
 
-          <article class="skill-card" data-status="built" data-domain="regulatory">
+          <article class="skill-card" data-status="built" data-domain="regulatory" data-type="skill" data-owner="group-compliance">
             <div class="skill-card-top">
-              <div class="skill-name">regulator-watch</div>
+              <div class="skill-name">reg-change-workflow</div>
               <span class="status built">Built</span>
             </div>
-            <p class="skill-desc">Monitors FINMA, HKMA and SFC publication pages. Produces a digest filtered for private‑banking relevance, with source URLs, dates, and a Pictet‑impact note.</p>
-            <p class="skill-when">“What's new from FINMA this week?” — Monday‑morning routine.</p>
+            <p class="skill-desc">End-to-end orchestrator for the regulatory change workflow. Chains regulator-watch → reg-materiality-triage → reg-impact-assessor → reg-remediation-planner → policy-compliance-checker, with human-review gates at each transition.</p>
+            <p class="skill-when">When a user wants to process a regulatory change from detection through to remediation, or wants to know where they are in the workflow. The "conductor" — it calls the other skills, you don't call it from within another skill.</p>
             <div class="skill-meta">
               <span class="tag layer domain">Regulatory</span>
               <span class="owner">Group Compliance</span>
             </div>
           </article>
 
-          <article class="skill-card" data-status="built" data-domain="regulatory">
+          <article class="skill-card" data-status="built" data-domain="regulatory" data-type="skill" data-owner="group-compliance">
+            <div class="skill-card-top">
+              <div class="skill-name">regulator-watch</div>
+              <span class="status built">Built</span>
+            </div>
+            <p class="skill-desc">Monitors FINMA, HKMA and SFC publication pages. Produces a digest filtered for private-banking relevance, with source URLs, dates, and a Pictet-impact note.</p>
+            <p class="skill-when">"What's new from FINMA this week?" — Monday-morning routine.</p>
+            <div class="skill-meta">
+              <span class="tag layer domain">Regulatory</span>
+              <span class="owner">Group Compliance</span>
+            </div>
+          </article>
+
+          <article class="skill-card" data-status="built" data-domain="regulatory" data-type="skill" data-owner="group-compliance">
+            <div class="skill-card-top">
+              <div class="skill-name">reg-materiality-triage</div>
+              <span class="status built">Built</span>
+            </div>
+            <p class="skill-desc">Lightweight first-pass screening of a regulatory change: is it material to Pictet? Outputs a yes/no/maybe verdict with a confidence score and a structured brief for human review.</p>
+            <p class="skill-when">Sits between regulator-watch (step 1) and reg-impact-assessor (step 3). Use before committing to a full impact assessment — the gate that decides whether to invest that effort.</p>
+            <div class="skill-meta">
+              <span class="tag layer domain">Regulatory</span>
+              <span class="owner">Group Compliance</span>
+            </div>
+          </article>
+
+          <article class="skill-card" data-status="built" data-domain="regulatory" data-type="skill" data-owner="group-compliance">
             <div class="skill-card-top">
               <div class="skill-name">reg-impact-assessor</div>
               <span class="status built">Built</span>
             </div>
             <p class="skill-desc">Decomposes a new regulation into numbered requirements, runs gap analysis vs current policy, drafts an action plan and an ExCo summary.</p>
-            <p class="skill-when">Forward‑looking — new regulation arrives, what do we change?</p>
+            <p class="skill-when">Forward-looking — new regulation arrives, what do we change?</p>
             <div class="skill-meta">
               <span class="tag layer domain">Regulatory</span>
               <span class="owner">Group Compliance</span>
             </div>
           </article>
 
-          <article class="skill-card" data-status="built" data-domain="regulatory">
+          <article class="skill-card" data-status="built" data-domain="regulatory" data-type="skill" data-owner="group-compliance">
+            <div class="skill-card-top">
+              <div class="skill-name">reg-remediation-planner</div>
+              <span class="status built">Built</span>
+            </div>
+            <p class="skill-desc">Turns an impact assessment into a signed-off-ready remediation plan: actions mapped to entity-level teams, deadlines, dependencies, workstreams, timeline, and governance. The final deliverable of the regulatory change workflow.</p>
+            <p class="skill-when">Last step in the workflow — after reg-impact-assessor has identified gaps and a reviewer has approved. Use to produce the "who does what by when" plan that people actually execute.</p>
+            <div class="skill-meta">
+              <span class="tag layer domain">Regulatory</span>
+              <span class="owner">Group Compliance</span>
+            </div>
+          </article>
+
+          <article class="skill-card" data-status="built" data-domain="regulatory" data-type="skill" data-owner="group-compliance">
             <div class="skill-card-top">
               <div class="skill-name">policy-compliance-checker</div>
               <span class="status built">Built</span>
             </div>
-            <p class="skill-desc">Audits an internal policy against a named regulator source. Per‑requirement coverage map, severity‑ranked gap list, compliance scorecard.</p>
-            <p class="skill-when">Backward‑looking — does our existing policy meet today's expectations?</p>
+            <p class="skill-desc">Audits an internal policy against a named regulator source. Per-requirement coverage map, severity-ranked gap list, compliance scorecard.</p>
+            <p class="skill-when">Backward-looking — does our existing policy meet today's expectations?</p>
             <div class="skill-meta">
               <span class="tag layer domain">Regulatory</span>
               <span class="owner">Group Compliance + Op Risk</span>
             </div>
           </article>
 
-          <article class="skill-card" data-status="roadmap" data-domain="regulatory" data-priority="high">
+          <article class="skill-card" data-status="roadmap" data-domain="regulatory" data-priority="high" data-type="skill" data-owner="regulatory-reporting">
             <div class="skill-card-top">
               <div class="skill-name">return-filer-helper</div>
               <span class="status roadmap">Roadmap</span>
             </div>
-            <p class="skill-desc">Walkthroughs for periodic supervisory returns (HKMA MA(BS), FINMA self‑assessments) — fields, common errors, deadlines.</p>
+            <p class="skill-desc">Walkthroughs for periodic supervisory returns (HKMA MA(BS), FINMA self-assessments) — fields, common errors, deadlines.</p>
             <p class="skill-when">Filing season; new joiners in the regulatory reporting team.</p>
             <div class="skill-meta">
               <span class="tag layer domain">Regulatory</span>
@@ -999,12 +1163,12 @@
             </div>
           </article>
 
-          <article class="skill-card" data-status="roadmap" data-domain="regulatory" data-priority="medium">
+          <article class="skill-card" data-status="roadmap" data-domain="regulatory" data-priority="medium" data-type="skill" data-owner="group-compliance">
             <div class="skill-card-top">
               <div class="skill-name">consultation-responder</div>
               <span class="status roadmap">Roadmap</span>
             </div>
-            <p class="skill-desc">Drafts a Pictet response to a regulator consultation: structured by question, balanced, with our position cross‑checked against prior submissions.</p>
+            <p class="skill-desc">Drafts a Pictet response to a regulator consultation: structured by question, balanced, with our position cross-checked against prior submissions.</p>
             <p class="skill-when">When an open FINMA, HKMA or SFC consultation lands.</p>
             <div class="skill-meta">
               <span class="tag layer domain">Regulatory</span>
@@ -1013,12 +1177,12 @@
             </div>
           </article>
 
-          <article class="skill-card" data-status="roadmap" data-domain="regulatory" data-priority="medium">
+          <article class="skill-card" data-status="roadmap" data-domain="regulatory" data-priority="medium" data-type="skill" data-owner="group-compliance">
             <div class="skill-card-top">
               <div class="skill-name">circular-translator</div>
               <span class="status roadmap">Roadmap</span>
             </div>
-            <p class="skill-desc">Plain‑English / plain‑French rewrite of a regulator circular for a business audience, without losing the binding obligations.</p>
+            <p class="skill-desc">Plain-English / plain-French rewrite of a regulator circular for a business audience, without losing the binding obligations.</p>
             <p class="skill-when">Briefing a Business Line Head on what a circular actually means for them.</p>
             <div class="skill-meta">
               <span class="tag layer domain">Regulatory</span>
@@ -1040,13 +1204,13 @@
 
         <div class="skill-grid">
 
-          <article class="skill-card" data-status="roadmap" data-domain="aml" data-priority="high">
+          <article class="skill-card" data-status="roadmap" data-domain="aml" data-priority="high" data-type="skill" data-owner="aml-unit">
             <div class="skill-card-top">
               <div class="skill-name">kyc-file-summariser</div>
               <span class="status roadmap">Roadmap</span>
             </div>
-            <p class="skill-desc">Structured summary of a KYC file: red flags, missing fields, source‑of‑wealth gaps, escalation triggers.</p>
-            <p class="skill-when">Periodic KYC review; new‑client onboarding sign‑off.</p>
+            <p class="skill-desc">Structured summary of a KYC file: red flags, missing fields, source-of-wealth gaps, escalation triggers.</p>
+            <p class="skill-when">Periodic KYC review; new-client onboarding sign-off.</p>
             <div class="skill-meta">
               <span class="tag layer domain">AML</span>
               <span class="tag priority high">High priority</span>
@@ -1054,7 +1218,7 @@
             </div>
           </article>
 
-          <article class="skill-card" data-status="roadmap" data-domain="aml" data-priority="high">
+          <article class="skill-card" data-status="roadmap" data-domain="aml" data-priority="high" data-type="skill" data-owner="aml-unit">
             <div class="skill-card-top">
               <div class="skill-name">pep-screening-explainer</div>
               <span class="status roadmap">Roadmap</span>
@@ -1068,7 +1232,7 @@
             </div>
           </article>
 
-          <article class="skill-card" data-status="roadmap" data-domain="aml" data-priority="medium">
+          <article class="skill-card" data-status="roadmap" data-domain="aml" data-priority="medium" data-type="skill" data-owner="aml-unit">
             <div class="skill-card-top">
               <div class="skill-name">transaction-narrative</div>
               <span class="status roadmap">Roadmap</span>
@@ -1095,13 +1259,13 @@
 
         <div class="skill-grid">
 
-          <article class="skill-card" data-status="roadmap" data-domain="wealth" data-priority="high">
+          <article class="skill-card" data-status="roadmap" data-domain="wealth" data-priority="high" data-type="skill" data-owner="investment-compliance">
             <div class="skill-card-top">
               <div class="skill-name">portfolio-narrative-generator</div>
               <span class="status roadmap">Roadmap</span>
             </div>
-            <p class="skill-desc">Client‑facing quarterly portfolio commentary — drafts only, in the client's preferred language, with mandatory disclaimers.</p>
-            <p class="skill-when">Quarterly review cycles; ad‑hoc client briefings.</p>
+            <p class="skill-desc">Client-facing quarterly portfolio commentary — drafts only, in the client's preferred language, with mandatory disclaimers.</p>
+            <p class="skill-when">Quarterly review cycles; ad-hoc client briefings.</p>
             <div class="skill-meta">
               <span class="tag layer domain">Wealth</span>
               <span class="tag priority high">High priority</span>
@@ -1109,13 +1273,13 @@
             </div>
           </article>
 
-          <article class="skill-card" data-status="roadmap" data-domain="wealth" data-priority="high">
+          <article class="skill-card" data-status="roadmap" data-domain="wealth" data-priority="high" data-type="skill" data-owner="investment-compliance">
             <div class="skill-card-top">
               <div class="skill-name">suitability-checker</div>
               <span class="status roadmap">Roadmap</span>
             </div>
             <p class="skill-desc">Given a proposed trade and a client profile, returns a structured suitability review under FinSA / MiFID II.</p>
-            <p class="skill-when">Pre‑trade check on advisory and discretionary orders.</p>
+            <p class="skill-when">Pre-trade check on advisory and discretionary orders.</p>
             <div class="skill-meta">
               <span class="tag layer domain">Wealth</span>
               <span class="tag priority high">High priority</span>
@@ -1123,17 +1287,17 @@
             </div>
           </article>
 
-          <article class="skill-card" data-status="roadmap" data-domain="wealth" data-priority="high">
+          <article class="skill-card" data-status="roadmap" data-domain="wealth" data-priority="high" data-type="skill" data-owner="cross-border-compliance">
             <div class="skill-card-top">
               <div class="skill-name">cross-border-checker</div>
               <span class="status roadmap">Roadmap</span>
             </div>
-            <p class="skill-desc">Given an RM action and a client domicile, returns green / amber / red against the Cross‑Border Country Manual with the exact restriction cited.</p>
-            <p class="skill-when">Travel pre‑approval; new prospect outreach; remote onboarding.</p>
+            <p class="skill-desc">Given an RM action and a client domicile, returns green / amber / red against the Cross-Border Country Manual with the exact restriction cited.</p>
+            <p class="skill-when">Travel pre-approval; new prospect outreach; remote onboarding.</p>
             <div class="skill-meta">
               <span class="tag layer domain">Wealth</span>
               <span class="tag priority high">High priority</span>
-              <span class="owner">Cross‑Border Compliance</span>
+              <span class="owner">Cross-Border Compliance</span>
             </div>
           </article>
 
@@ -1150,7 +1314,7 @@
 
         <div class="skill-grid">
 
-          <article class="skill-card" data-status="roadmap" data-domain="legal" data-priority="high">
+          <article class="skill-card" data-status="roadmap" data-domain="legal" data-priority="high" data-type="skill" data-owner="legal">
             <div class="skill-card-top">
               <div class="skill-name">contract-redliner</div>
               <span class="status roadmap">Roadmap</span>
@@ -1164,12 +1328,12 @@
             </div>
           </article>
 
-          <article class="skill-card" data-status="roadmap" data-domain="legal" data-priority="medium">
+          <article class="skill-card" data-status="roadmap" data-domain="legal" data-priority="medium" data-type="skill" data-owner="legal">
             <div class="skill-card-top">
               <div class="skill-name">nda-extractor</div>
               <span class="status roadmap">Roadmap</span>
             </div>
-            <p class="skill-desc">From an NDA: term length, restricted use, jurisdiction, governing law, key obligations — into a structured one‑page summary.</p>
+            <p class="skill-desc">From an NDA: term length, restricted use, jurisdiction, governing law, key obligations — into a structured one-page summary.</p>
             <p class="skill-when">High volume of NDA review.</p>
             <div class="skill-meta">
               <span class="tag layer domain">Legal</span>
@@ -1178,7 +1342,7 @@
             </div>
           </article>
 
-          <article class="skill-card" data-status="roadmap" data-domain="legal" data-priority="medium">
+          <article class="skill-card" data-status="roadmap" data-domain="legal" data-priority="medium" data-type="skill" data-owner="legal">
             <div class="skill-card-top">
               <div class="skill-name">enforcement-precedent-finder</div>
               <span class="status roadmap">Roadmap</span>
@@ -1195,7 +1359,7 @@
         </div>
       </div>
 
-      <!-- ─ Ops & Tech ─ -->
+      <!-- ─ Operations ─ -->
       <div class="domain-group" data-domain="ops">
         <div class="domain-head">
           <h3>Domain · Operations &amp; Technology</h3>
@@ -1205,12 +1369,12 @@
 
         <div class="skill-grid">
 
-          <article class="skill-card" data-status="roadmap" data-domain="ops" data-priority="medium">
+          <article class="skill-card" data-status="roadmap" data-domain="ops" data-priority="medium" data-type="skill" data-owner="it-risk">
             <div class="skill-card-top">
               <div class="skill-name">incident-write-up</div>
               <span class="status roadmap">Roadmap</span>
             </div>
-            <p class="skill-desc">Structured post‑incident report from raw notes: timeline, impact, root cause hypothesis, corrective actions, lessons.</p>
+            <p class="skill-desc">Structured post-incident report from raw notes: timeline, impact, root cause hypothesis, corrective actions, lessons.</p>
             <p class="skill-when">Within 24 hours of any operational or IT incident.</p>
             <div class="skill-meta">
               <span class="tag layer domain">Operations</span>
@@ -1219,12 +1383,12 @@
             </div>
           </article>
 
-          <article class="skill-card" data-status="roadmap" data-domain="ops" data-priority="medium">
+          <article class="skill-card" data-status="roadmap" data-domain="ops" data-priority="medium" data-type="skill" data-owner="it-risk">
             <div class="skill-card-top">
               <div class="skill-name">vendor-risk-questionnaire</div>
               <span class="status roadmap">Roadmap</span>
             </div>
-            <p class="skill-desc">First‑draft answers for inbound vendor security questionnaires, sourced from approved policy positions only.</p>
+            <p class="skill-desc">First-draft answers for inbound vendor security questionnaires, sourced from approved policy positions only.</p>
             <p class="skill-when">When a counterparty asks for our infosec posture in 200 questions.</p>
             <div class="skill-meta">
               <span class="tag layer domain">Operations</span>
@@ -1246,13 +1410,13 @@
 
         <div class="skill-grid">
 
-          <article class="skill-card" data-status="roadmap" data-domain="hr" data-priority="medium">
+          <article class="skill-card" data-status="roadmap" data-domain="hr" data-priority="medium" data-type="skill" data-owner="hr">
             <div class="skill-card-top">
               <div class="skill-name">hr-policy-qa</div>
               <span class="status roadmap">Roadmap</span>
             </div>
             <p class="skill-desc">A scoped instance of <span class="mono">policy-lookup</span> for HR policies — leave, mobility, conduct, parental, expenses.</p>
-            <p class="skill-when">Anywhere an employee would normally email HR a one‑line question.</p>
+            <p class="skill-when">Anywhere an employee would normally email HR a one-line question.</p>
             <div class="skill-meta">
               <span class="tag layer domain">HR</span>
               <span class="tag priority medium">Medium priority</span>
@@ -1260,17 +1424,134 @@
             </div>
           </article>
 
-          <article class="skill-card" data-status="roadmap" data-domain="hr" data-priority="low">
+          <article class="skill-card" data-status="roadmap" data-domain="hr" data-priority="low" data-type="skill" data-owner="hr">
             <div class="skill-card-top">
               <div class="skill-name">role-description-drafter</div>
               <span class="status roadmap">Roadmap</span>
             </div>
-            <p class="skill-desc">Drafts a role description from a one‑line brief, using Pictet conventions and grade‑level expectations.</p>
+            <p class="skill-desc">Drafts a role description from a one-line brief, using Pictet conventions and grade-level expectations.</p>
             <p class="skill-when">Hiring pipeline; internal mobility cycles.</p>
             <div class="skill-meta">
               <span class="tag layer domain">HR</span>
               <span class="tag priority low">Low priority</span>
               <span class="owner">HR</span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- ─ Contexts ─ -->
+      <div class="domain-group" data-domain="context">
+        <div class="domain-head">
+          <h3>Context · Reference</h3>
+          <span class="domain-owner">Entity, report and policy-area context the skills reference</span>
+          <span class="domain-count">8 contexts · Entity, Policy area, Report</span>
+        </div>
+
+        <div class="skill-grid">
+
+          <article class="skill-card context-card" data-domain="context" data-status="context" data-type="context" data-context-type="entity" data-owner="pam-compliance" data-jurisdiction="CH">
+            <div class="skill-card-top">
+              <div class="skill-name">Pictet Asset Management SA</div>
+              <span class="status context-type type-entity">Entity</span>
+            </div>
+            <p class="skill-desc">Institutional asset management arm — manages UCITS/AIF fund ranges and segregated mandates. Dual-supervised by FINMA (Swiss) and CSSF (Luxembourg fund vehicles).</p>
+            <p class="skill-when">CH · FINMA, CSSF</p>
+            <div class="skill-meta">
+              <span class="tag layer context">Context · <span class="mono">pictet-asset-management</span></span>
+              <span class="owner">PAM Compliance + Group Compliance</span>
+            </div>
+          </article>
+
+          <article class="skill-card context-card" data-domain="context" data-status="context" data-type="context" data-context-type="entity" data-owner="group-executive-office" data-jurisdiction="CH">
+            <div class="skill-card-top">
+              <div class="skill-name">Banque Pictet &amp; Cie SA (Geneva HQ)</div>
+              <span class="status context-type type-entity">Entity</span>
+            </div>
+            <p class="skill-desc">Geneva headquarters — the partnership bank and primary booking centre for Swiss and international wealth management clients. FINMA-supervised as a bank and securities dealer.</p>
+            <p class="skill-when">CH · FINMA</p>
+            <div class="skill-meta">
+              <span class="tag layer context">Context · <span class="mono">pictet-geneva-hq</span></span>
+              <span class="owner">Group Executive Office + Group Compliance</span>
+            </div>
+          </article>
+
+          <article class="skill-card context-card" data-domain="context" data-status="context" data-type="context" data-context-type="entity" data-owner="pictet-luxembourg" data-jurisdiction="LU">
+            <div class="skill-card-top">
+              <div class="skill-name">Pictet &amp; Cie (Europe) SA (Luxembourg)</div>
+              <span class="status context-type type-entity">Entity</span>
+            </div>
+            <p class="skill-desc">Luxembourg EU hub — passported wealth management for European clients. CSSF-supervised credit institution under CRR/CRD with MiFID II passport.</p>
+            <p class="skill-when">LU · CSSF</p>
+            <div class="skill-meta">
+              <span class="tag layer context">Context · <span class="mono">pictet-luxembourg</span></span>
+              <span class="owner">Pictet Luxembourg + Group Compliance</span>
+            </div>
+          </article>
+
+          <article class="skill-card context-card" data-domain="context" data-status="context" data-type="context" data-context-type="entity" data-owner="pictet-asia-singapore" data-jurisdiction="SG">
+            <div class="skill-card-top">
+              <div class="skill-name">Pictet Asia Limited (Singapore Branch)</div>
+              <span class="status context-type type-entity">Entity</span>
+            </div>
+            <p class="skill-desc">Singapore branch — discretionary and advisory wealth management for South-East Asian clients. MAS-supervised under a CMS licence.</p>
+            <p class="skill-when">SG · MAS</p>
+            <div class="skill-meta">
+              <span class="tag layer context">Context · <span class="mono">pictet-singapore</span></span>
+              <span class="owner">Pictet Asia Singapore + Group Compliance</span>
+            </div>
+          </article>
+
+          <article class="skill-card context-card" data-domain="context" data-status="context" data-type="context" data-context-type="policy-area" data-owner="aml-unit-geneva" data-jurisdiction="CH, LU, SG">
+            <div class="skill-card-top">
+              <div class="skill-name">AML/CFT Regulatory &amp; Policy Framework</div>
+              <span class="status context-type type-policy-area">Policy area</span>
+            </div>
+            <p class="skill-desc">Anti-money-laundering and counter-terrorism-financing regulatory landscape and internal policy framework. Maps external regulations to internal policies and responsible teams across jurisdictions.</p>
+            <p class="skill-when">CH, LU, SG · FINMA, CSSF, MAS, FATF</p>
+            <div class="skill-meta">
+              <span class="tag layer context">Context · <span class="mono">aml-cft-framework</span></span>
+              <span class="owner">AML Unit (Geneva) + Group Compliance</span>
+            </div>
+          </article>
+
+          <article class="skill-card context-card" data-domain="context" data-status="context" data-type="context" data-context-type="policy-area" data-owner="group-finance" data-jurisdiction="CH, LU, SG">
+            <div class="skill-card-top">
+              <div class="skill-name">Capital &amp; Liquidity Regulatory Framework</div>
+              <span class="status context-type type-policy-area">Policy area</span>
+            </div>
+            <p class="skill-desc">Prudential capital and liquidity regulatory landscape and internal policy framework. Maps Basel III/IV, CRR/CRD, and local requirements to internal policies and responsible teams.</p>
+            <p class="skill-when">CH, LU, SG · FINMA, CSSF, MAS, BCBS</p>
+            <div class="skill-meta">
+              <span class="tag layer context">Context · <span class="mono">capital-liquidity-requirements</span></span>
+              <span class="owner">Group Finance + Group Risk</span>
+            </div>
+          </article>
+
+          <article class="skill-card context-card" data-domain="context" data-status="context" data-type="context" data-context-type="report" data-owner="finance-luxembourg" data-jurisdiction="LU">
+            <div class="skill-card-top">
+              <div class="skill-name">CSSF Regulatory Reports — Luxembourg</div>
+              <span class="status context-type type-report">Report</span>
+            </div>
+            <p class="skill-desc">Inventory of regulatory reports filed by Luxembourg entity to CSSF — COREP, FINREP, liquidity, large exposures, Pillar III, AML annual report, and MiFID II transaction reporting.</p>
+            <p class="skill-when">LU · CSSF</p>
+            <div class="skill-meta">
+              <span class="tag layer context">Context · <span class="mono">reports-cssf-luxembourg</span></span>
+              <span class="owner">Finance Luxembourg + Compliance Luxembourg</span>
+            </div>
+          </article>
+
+          <article class="skill-card context-card" data-domain="context" data-status="context" data-type="context" data-context-type="report" data-owner="group-finance" data-jurisdiction="CH">
+            <div class="skill-card-top">
+              <div class="skill-name">FINMA Regulatory Reports — Geneva HQ</div>
+              <span class="status context-type type-report">Report</span>
+            </div>
+            <p class="skill-desc">Inventory of regulatory reports filed by Geneva HQ to FINMA — capital, liquidity, large exposures, MROS filings, and the annual regulatory audit.</p>
+            <p class="skill-when">CH · FINMA</p>
+            <div class="skill-meta">
+              <span class="tag layer context">Context · <span class="mono">reports-finma-geneva</span></span>
+              <span class="owner">Group Finance + Group Compliance</span>
             </div>
           </article>
 
@@ -1398,63 +1679,7 @@
     </div>
   </footer>
 
-  <!-- ─── Filter logic ────────────────────────────────────────────── -->
-  <script>
-    (function () {
-      const pills    = document.querySelectorAll('.pill');
-      const cards    = document.querySelectorAll('.skill-card');
-      const groups   = document.querySelectorAll('.domain-group');
-      const search   = document.getElementById('search');
-      const noResults= document.getElementById('no-results');
-
-      let activeFilter = 'all';
-      let query        = '';
-
-      function applyFilters () {
-        let visibleCount = 0;
-
-        cards.forEach(card => {
-          const status = card.dataset.status;
-          const domain = card.dataset.domain;
-          const name   = card.querySelector('.skill-name').textContent.toLowerCase();
-
-          const filterMatch =
-                activeFilter === 'all'    ? true
-              : activeFilter === 'built'   ? status === 'built'
-              : activeFilter === 'roadmap' ? status === 'roadmap'
-              : domain === activeFilter;
-
-          const searchMatch = !query || name.includes(query);
-
-          const show = filterMatch && searchMatch;
-          card.classList.toggle('hidden', !show);
-          if (show) visibleCount++;
-        });
-
-        groups.forEach(group => {
-          const anyVisible = Array.from(group.querySelectorAll('.skill-card'))
-                                  .some(c => !c.classList.contains('hidden'));
-          group.style.display = anyVisible ? '' : 'none';
-        });
-
-        noResults.style.display = visibleCount === 0 ? 'block' : 'none';
-      }
-
-      pills.forEach(pill => {
-        pill.addEventListener('click', () => {
-          pills.forEach(p => p.classList.remove('active'));
-          pill.classList.add('active');
-          activeFilter = pill.dataset.filter;
-          applyFilters();
-        });
-      });
-
-      search.addEventListener('input', e => {
-        query = e.target.value.trim().toLowerCase();
-        applyFilters();
-      });
-    })();
-  </script>
+  <!-- Filter logic is inlined alongside the filter bar (rendered server-side). -->
 
 </body>
 </html>

@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block title %}Catalogue{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">Skills library</div>
+    <h1>The catalogue</h1>
+    <p class="hero-sub">{{ counts.built }} built · {{ counts.roadmap }} on the roadmap · {{ counts.owners }} owning functions across {{ counts.domains }} domains{% if counts.contexts %} · {{ counts.contexts }} context item{{ 's' if counts.contexts != 1 else '' }}{% endif %}. Click any card to view or edit.</p>
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-num">{{ counts.built }}</div><div class="kpi-label">Built</div></div>
+      <div class="kpi"><div class="kpi-num">{{ counts.roadmap }}</div><div class="kpi-label">Roadmap</div></div>
+      <div class="kpi"><div class="kpi-num">{{ counts.owners }}</div><div class="kpi-label">Owning functions</div></div>
+      <div class="kpi"><div class="kpi-num">{{ counts.contexts }}</div><div class="kpi-label">Contexts</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="container">
+    {{ filter_bar|safe }}
+    <div class="catalogue">
+      {% for domain, html in blocks %}
+        {{ html|safe }}
+      {% endfor %}
+      {% if contexts_html %}
+        {{ contexts_html|safe }}
+      {% endif %}
+    </div>
+    <p id="no-results" style="display:none; text-align:center; color:var(--text-muted); padding:var(--space-6) 0;">No skills or contexts match the current filters.</p>
+  </div>
+</section>
+{% endblock %}

@@ -1,6 +1,12 @@
 ---
 name: regulator-watch
 description: Monitor financial-regulator publication pages (FINMA in Switzerland; HKMA and SFC in Hong Kong; and the additional sources listed in references/regulator-sources.md) and summarise what is new since a given date. Use whenever the user asks "what's new from [regulator]?", "what did [regulator] publish this week?", "are there any new circulars on [topic]?", or asks for a regulatory weekly digest. Always cite source URL and publication date; flag items relevant to private banking and wealth management.
+status: built
+domain: regulatory
+owner: Group Compliance
+order: 10
+summary: Monitors FINMA, HKMA and SFC publication pages. Produces a digest filtered for private-banking relevance, with source URLs, dates, and a Pictet-impact note.
+when_to_use: "What's new from FINMA this week?" — Monday-morning routine.
 ---
 
 # Regulator Watch

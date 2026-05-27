@@ -1,6 +1,12 @@
 ---
 name: policy-compliance-checker
 description: Compare an internal policy (a Pictet policy, procedure, or framework document) against an external regulatory source (a FINMA circular, HKMA SPM module, SFC code, EU directive, etc.) and produce a per-requirement coverage map plus a structured gap report. Use whenever the user asks "is our [X] policy aligned with [regulation]?", "what gaps does our policy have vs [circular]?", "do an internal compliance check on [policy] against [regulation]", or "audit our [policy] vs [regulator] expectations". Output covers: a numbered list of regulatory requirements, a coverage assessment (covered / partial / silent / out-of-scope) for each, a severity-ranked gap list with recommended remediation, a compliance scorecard, and an executive summary suitable for the Operational Risk Committee.
+status: built
+domain: regulatory
+owner: Group Compliance + Op Risk
+order: 30
+summary: Audits an internal policy against a named regulator source. Per-requirement coverage map, severity-ranked gap list, compliance scorecard.
+when_to_use: Backward-looking — does our existing policy meet today's expectations?
 ---
 
 # Policy Compliance Checker

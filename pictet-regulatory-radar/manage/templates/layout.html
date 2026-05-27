@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Skills{% endblock %} · Pictet</title>
+  <style>{{ css|safe }}</style>
+  <style>
+    /* Editor-only overrides on top of the shared catalogue stylesheet. */
+    a.skill-name { text-decoration: none; color: inherit; display: block; }
+    a.skill-name:hover { color: var(--accent); }
+
+    .skill-card { cursor: pointer; transition: border-color 0.12s ease, box-shadow 0.12s ease; }
+    .skill-card:hover { border-color: var(--accent-line); }
+
+    .card-actions { display: flex; align-items: center; gap: var(--space-3); }
+    a.card-edit {
+      font-size: 12px; font-weight: 500; color: var(--accent);
+      text-decoration: none; padding: 4px 10px; border-radius: var(--r-sm);
+      border: 1px solid var(--accent-line); background: var(--accent-soft);
+      white-space: nowrap;
+    }
+    a.card-edit:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    .topbar-inner a { color: inherit; text-decoration: none; }
+    .topbar-inner a:hover { color: var(--accent); }
+    .topbar-actions { display: flex; gap: var(--space-4); align-items: center; }
+    .topbar-actions .btn-primary { background: var(--accent); color: #fff; padding: 6px 14px; border-radius: var(--r-md); font-size: 13px; font-weight: 500; }
+    .topbar-actions .btn-primary:hover { color: #fff; opacity: 0.9; }
+
+    .flash { padding: var(--space-3) var(--space-4); border-radius: var(--r-md); margin-bottom: var(--space-3); font-size: 14px; }
+    .flash-success { background: var(--built-bg); color: var(--built); border: 1px solid color-mix(in srgb, var(--built) 20%, transparent); }
+    .flash-error { background: var(--prio-high); color: #fff; }
+
+    .breadcrumbs { font-size: 13px; color: var(--text-muted); margin-bottom: var(--space-4); }
+    .breadcrumbs a { color: var(--text-muted); text-decoration: none; }
+    .breadcrumbs a:hover { color: var(--accent); }
+
+    .page-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-4); margin-bottom: var(--space-5); flex-wrap: wrap; }
+    .page-head h1 { font-size: 32px; margin: 0; }
+    .page-head .skill-name-mono { font-family: var(--font-mono); }
+
+    .field-grid { display: grid; grid-template-columns: 180px 1fr; gap: var(--space-3) var(--space-4); align-items: start; }
+    .field-grid dt { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); padding-top: 4px; }
+    .field-grid dd { margin: 0; color: var(--text); }
+    .field-grid dd.mono { font-family: var(--font-mono); font-size: 13px; }
+
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); padding: var(--space-5); margin-bottom: var(--space-5); }
+    .card h2 { font-size: 18px; margin: 0 0 var(--space-4); }
+
+    .btn { display: inline-block; padding: 8px 16px; border-radius: var(--r-md); font-size: 13px; font-weight: 500; border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); cursor: pointer; text-decoration: none; }
+    .btn:hover { border-color: var(--accent-line); }
+    .btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .btn.primary:hover { opacity: 0.9; color: #fff; }
+    .btn-row { display: flex; gap: var(--space-3); margin-top: var(--space-5); }
+
+    form label { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 4px; }
+    form input[type="text"], form input[type="number"], form select, form textarea {
+      width: 100%; padding: 8px 10px; border: 1px solid var(--border-strong); border-radius: var(--r-sm);
+      font: inherit; font-size: 14px; background: var(--surface); color: var(--text); font-family: inherit;
+    }
+    form textarea { font-family: var(--font-mono); font-size: 13px; line-height: 1.5; }
+    form input:focus, form select:focus, form textarea:focus { outline: 2px solid var(--accent-line); outline-offset: 1px; border-color: var(--accent); }
+    .form-row { margin-bottom: var(--space-4); }
+    .form-row.split { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+    .field-error { color: var(--prio-high); font-size: 12px; margin-top: 4px; }
+    .field-hint { color: var(--text-faint); font-size: 12px; margin-top: 4px; }
+
+    .editor-split { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+    .editor-split textarea { min-height: 480px; resize: vertical; }
+    .editor-split .preview { min-height: 480px; padding: var(--space-4); border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--surface); overflow-y: auto; font-size: 14px; line-height: 1.6; }
+    .editor-split .preview h1 { font-size: 22px; margin: 0 0 var(--space-3); }
+    .editor-split .preview h2 { font-size: 18px; margin: var(--space-4) 0 var(--space-2); }
+    .editor-split .preview h3 { font-size: 14px; }
+    .editor-split .preview code { font-family: var(--font-mono); background: var(--surface-alt); padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+    .editor-split .preview pre { background: var(--surface-alt); padding: var(--space-3); border-radius: var(--r-sm); overflow-x: auto; }
+    .editor-split .preview pre code { background: transparent; padding: 0; }
+    .editor-split .preview blockquote { border-left: 3px solid var(--accent-line); padding-left: var(--space-3); color: var(--text-muted); margin: var(--space-3) 0; }
+
+    .body-rendered { font-size: 14px; line-height: 1.65; }
+    .body-rendered h1 { font-size: 22px; }
+    .body-rendered h2 { font-size: 18px; margin-top: var(--space-5); }
+    .body-rendered h3 { font-size: 14px; }
+    .body-rendered code { font-family: var(--font-mono); background: var(--surface-alt); padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+    .body-rendered pre { background: var(--surface-alt); padding: var(--space-3); border-radius: var(--r-sm); overflow-x: auto; }
+    .body-rendered table { border-collapse: collapse; margin: var(--space-3) 0; }
+    .body-rendered table th, .body-rendered table td { border: 1px solid var(--border); padding: 6px 10px; text-align: left; font-size: 13px; }
+    .body-rendered blockquote { border-left: 3px solid var(--accent-line); padding-left: var(--space-3); color: var(--text-muted); margin: var(--space-3) 0; }
+  </style>
+  {% block head_extra %}{% endblock %}
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="brand" href="{{ url_for('catalogue_view') }}">
+        <span class="dot"></span>
+        Pictet · Skills
+      </a>
+      <div class="topbar-actions">
+        <a href="{{ url_for('skill_new') }}" class="btn-primary">+ New skill</a>
+        <a href="{{ url_for('context_new') }}" class="btn-primary" style="background: var(--dom-aml);">+ New context</a>
+      </div>
+    </div>
+  </header>
+  {% with msgs = get_flashed_messages(with_categories=true) %}
+    {% if msgs %}
+      <div class="container" style="padding-top: var(--space-4);">
+        {% for category, msg in msgs %}
+          <div class="flash flash-{{ category }}">{{ msg }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+  <script>
+    // Make every catalogue card clickable. Real anchors (skill name, Edit
+    // button) still take precedence — we only navigate when the click lands
+    // on empty card surface.
+    document.querySelectorAll('.skill-card').forEach(function (card) {
+      var link = card.querySelector('a.skill-name');
+      if (!link) return;
+      card.addEventListener('click', function (e) {
+        if (e.target.closest('a')) return;
+        window.location.href = link.getAttribute('href');
+      });
+    });
+  </script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

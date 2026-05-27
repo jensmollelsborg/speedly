@@ -1,6 +1,12 @@
 ---
 name: policy-lookup
 description: Search Pictet internal policies and procedures to answer "does our current policy cover X?" or "what does Pictet's policy say about Y?" Use whenever a colleague asks about an internal rule, control, threshold, or procedure — including AML/KYC, suitability, cross-border, code of conduct, IT/data, and ESG topics. Always cite the source document and section.
+status: built
+domain: universal
+owner: AI CoE + corpus owner
+order: 10
+summary: Cited answers from any internal-policy corpus. Tells you exactly which section applies, quotes the wording, and refuses to guess if it can't find a match.
+when_to_use: "Does our policy cover X?" · Compliance, HR, IT, Legal — anywhere there's a policy library.
 ---
 
 # Policy Lookup

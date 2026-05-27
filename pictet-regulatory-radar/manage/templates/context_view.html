@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block title %}{{ fields.title or name }}{% endblock %}
+{% block content %}
+<section class="block">
+  <div class="container">
+    <div class="breadcrumbs">
+      <a href="{{ url_for('catalogue_view') }}">Catalogue</a> · Context · <span class="mono">{{ name }}</span>
+    </div>
+    <div class="page-head">
+      <h1>{{ fields.title or name }}</h1>
+      <div class="btn-row" style="margin: 0;">
+        <a class="btn primary" href="{{ url_for('context_edit_get', name=name) }}">Edit</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Frontmatter</h2>
+      <dl class="field-grid">
+        {% for key in field_order %}
+          {% if fields.get(key) %}
+            <dt>{{ key }}</dt>
+            <dd{% if key == 'name' %} class="mono"{% endif %}>{{ fields[key] }}</dd>
+          {% endif %}
+        {% endfor %}
+      </dl>
+    </div>
+
+    <div class="card">
+      <h2>Body</h2>
+      <div class="body-rendered" id="body-rendered"></div>
+      <noscript><pre style="white-space: pre-wrap; font-family: var(--font-mono); font-size: 13px;">{{ body }}</pre></noscript>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script id="raw-body" type="text/plain">{{ body }}</script>
+<script>
+  (function () {
+    const raw = document.getElementById('raw-body').textContent;
+    const target = document.getElementById('body-rendered');
+    if (window.marked && target) {
+      target.innerHTML = marked.parse(raw);
+    } else if (target) {
+      const pre = document.createElement('pre');
+      pre.style.whiteSpace = 'pre-wrap';
+      pre.textContent = raw;
+      target.replaceWith(pre);
+    }
+  })();
+</script>
+{% endblock %}
