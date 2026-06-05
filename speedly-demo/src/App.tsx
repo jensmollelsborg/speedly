@@ -52,7 +52,7 @@ function GapN({n}){if(!n)return null;return <span style={{fontSize:11,color:P.am
 function Src({sk,cx}){return <div style={{marginTop:8,padding:"6px 10px",background:P.warmGray,borderRadius:4,fontSize:11,color:P.textMuted,display:"flex",flexWrap:"wrap",gap:4,alignItems:"center"}}><span style={{fontWeight:500,marginRight:2}}>Source:</span>{sk?.map(s=><span key={s} style={{display:"inline-flex",alignItems:"center",gap:3,padding:"1px 7px",borderRadius:4,border:`0.5px solid ${P.border}`,color:P.accent,fontSize:11,background:P.accentLight}}><i className="ti ti-cpu" style={{fontSize:11}}/>{s}</span>)}{cx?.map(c=><span key={c} style={{display:"inline-flex",alignItems:"center",gap:3,padding:"1px 7px",borderRadius:4,border:`0.5px solid ${P.border}`,color:P.gold,fontSize:11,background:P.goldBg}}><i className="ti ti-database" style={{fontSize:11}}/>{c}</span>)}</div>;}
 function Gap({children}){return <div style={{display:"flex",gap:8,padding:"6px 10px",borderRadius:4,background:P.amberBg,color:P.amber,fontSize:12,marginTop:8,alignItems:"flex-start",border:`0.5px solid ${P.borderLight}`}}><i className="ti ti-alert-triangle" style={{fontSize:13,marginTop:1,flexShrink:0}}/><span>{children}</span></div>;}
 
-function Fold({title,sub,badges,children,startOpen=false}){
+function Fold({title,sub,badges,children,startOpen=false}:{title:any,sub?:any,badges?:any,children:any,startOpen?:boolean}){
   const[o,setO]=useState(startOpen);
   return <div style={{background:"#fff",border:`0.5px solid ${P.border}`,borderRadius:4,marginBottom:10,overflow:"hidden"}}>
     <div onClick={e=>{e.stopPropagation();setO(x=>!x);}} style={{padding:"10px 12px",cursor:"pointer",display:"flex",gap:8,alignItems:"flex-start"}} onMouseEnter={e=>e.currentTarget.style.background=P.warmGray} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
@@ -70,8 +70,8 @@ function Ask({hint}){
   const[v,setV]=useState("");
   return <div style={{padding:"12px 0 4px",borderTop:`0.5px solid ${P.border}`,marginTop:16}}>
     <div style={{display:"flex",gap:8}}>
-      <input value={v} onChange={e=>setV(e.target.value)} placeholder={hint} style={{flex:1,fontSize:13,padding:"8px 12px",borderRadius:4,border:`0.5px solid ${P.border}`,background:"#fff",color:P.text,outline:"none"}} onKeyDown={e=>{if(e.key==="Enter"&&v.trim()){window.sendPrompt?.(v);setV("");}}}/>
-      <button onClick={()=>{if(v.trim()){window.sendPrompt?.(v);setV("");}}} style={{padding:"8px 14px",borderRadius:4,border:`0.5px solid ${P.border}`,background:"transparent",cursor:"pointer",fontSize:13,color:P.text}}>Ask ↗</button>
+      <input value={v} onChange={e=>setV(e.target.value)} placeholder={hint} style={{flex:1,fontSize:13,padding:"8px 12px",borderRadius:4,border:`0.5px solid ${P.border}`,background:"#fff",color:P.text,outline:"none"}} onKeyDown={e=>{if(e.key==="Enter"&&v.trim()){(window as any).sendPrompt?.(v);setV("");}}}/>
+      <button onClick={()=>{if(v.trim()){(window as any).sendPrompt?.(v);setV("");}}} style={{padding:"8px 14px",borderRadius:4,border:`0.5px solid ${P.border}`,background:"transparent",cursor:"pointer",fontSize:13,color:P.text}}>Ask ↗</button>
     </div>
   </div>;
 }
@@ -108,9 +108,9 @@ const SUBLABELS={regwatch:"AI detects + screens",deepreg:"AI assesses · human r
 // ── Main app ──
 export default function App(){
   const[screen,setScreen]=useState("cover");
-  const[selReg,setSelReg]=useState(null);
+  const[selReg,setSelReg]=useState<string|null>(null);
   const[filters,setFilters]=useState({juris:"",entity:"",team:"",report:"",cat:""});
-  const[modal,setModal]=useState(null);
+  const[modal,setModal]=useState<string|null>(null);
 
   const filtered=useMemo(()=>DATA.filter(d=>{
     if(filters.juris&&d.juris!==filters.juris)return false;
